@@ -140,6 +140,8 @@ Use `scripts/save_goal.py` from this skill directory when available:
 python scripts/save_goal.py --title "<title>" --format codex --format markdown < goal.txt
 ```
 
+Resolve `scripts/save_goal.py` relative to this `SKILL.md` file, but run it from the user's current project directory so `.goals/` is created in that project.
+
 The script writes to `.goals/YYYY-MM-DD-slug.md` in the current working directory. It creates `.goals/` if needed and avoids overwriting by appending `-2`, `-3`, etc.
 
 If the script is unavailable, create the same file manually.

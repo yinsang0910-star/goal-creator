@@ -21,7 +21,7 @@ Verify:
 - Save one sample goal and confirm the file exists under `.goals/`.
 
 Boundaries:
-- Write only inside `C:\goal-creator`.
+- Write only inside the current goal-creator repository.
 - Do not modify existing installed skills during repository implementation.
 
 Stop:
@@ -41,7 +41,7 @@ Verify:
 - Save one sample goal and confirm the file exists under `.goals/`.
 
 Boundaries:
-- Write only inside `C:\goal-creator`.
+- Write only inside the current goal-creator repository.
 - Do not modify existing installed skills during repository implementation.
 
 Stop:

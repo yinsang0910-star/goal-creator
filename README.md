@@ -63,10 +63,11 @@ It avoids giant prompt contracts. A useful goal needs only enough structure to k
 
 ### Beginner Quick Start
 
-1. Copy this repo into your shared skills folder:
+1. Clone and copy this repo into your shared skills folder:
 
 ```powershell
-Copy-Item -Recurse C:\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
+git clone https://github.com/yinsang0910-star/goal-creator.git
+Copy-Item -Recurse .\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
 ```
 
 2. Restart your agent.
@@ -146,10 +147,11 @@ goal-management, agent-tools, prompt-engineering, markdown, github-issues
 
 ### 小白快速开始
 
-1. 把仓库复制到共享 skills 目录：
+1. 克隆仓库，并复制到共享 skills 目录：
 
 ```powershell
-Copy-Item -Recurse C:\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
+git clone https://github.com/yinsang0910-star/goal-creator.git
+Copy-Item -Recurse .\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
 ```
 
 2. 重启你的 Agent。
@@ -229,10 +231,11 @@ Codex / Claude / Gemini / Cursor / GitHub で使える短いゴール
 
 ### 初心者向けクイックスタート
 
-1. このリポジトリを shared skills フォルダへコピーします：
+1. このリポジトリを clone して、shared skills フォルダへコピーします：
 
 ```powershell
-Copy-Item -Recurse C:\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
+git clone https://github.com/yinsang0910-star/goal-creator.git
+Copy-Item -Recurse .\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
 ```
 
 2. Agent を再起動します。
@@ -312,10 +315,11 @@ Codex / Claude / Gemini / Cursor / GitHub에서 바로 쓸 수 있는 짧은 goa
 
 ### 초보자 빠른 시작
 
-1. 이 저장소를 shared skills 폴더에 복사합니다:
+1. 이 저장소를 clone한 뒤 shared skills 폴더에 복사합니다:
 
 ```powershell
-Copy-Item -Recurse C:\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
+git clone https://github.com/yinsang0910-star/goal-creator.git
+Copy-Item -Recurse .\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
 ```
 
 2. Agent를 다시 시작합니다.
