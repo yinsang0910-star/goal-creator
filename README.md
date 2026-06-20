@@ -105,15 +105,6 @@ Pause:
 - Required behavior is ambiguous, credentials are needed, or failures point outside the module.
 ```
 
-### Tags
-
-Recommended GitHub topics:
-
-```text
-ai-agents, codex, claude-code, gemini, cursor, windsurf, cline,
-goal-management, agent-tools, prompt-engineering, markdown, github-issues
-```
-
 ---
 
 ## 中文
@@ -187,15 +178,6 @@ Stop:
 
 Pause:
 - 需求行为不明确、需要凭证，或失败原因指向回测模块之外。
-```
-
-### 标签
-
-推荐 GitHub topics：
-
-```text
-ai-agents, codex, claude-code, gemini, cursor, windsurf, cline,
-goal-management, agent-tools, prompt-engineering, markdown, github-issues
 ```
 
 ---
@@ -273,15 +255,6 @@ Pause:
 - 仕様があいまい、認証情報が必要、または失敗原因が対象外にある。
 ```
 
-### Tags
-
-おすすめ GitHub topics：
-
-```text
-ai-agents, codex, claude-code, gemini, cursor, windsurf, cline,
-goal-management, agent-tools, prompt-engineering, markdown, github-issues
-```
-
 ---
 
 ## 한국어
@@ -355,13 +328,4 @@ Stop:
 
 Pause:
 - 요구사항이 모호하거나, 인증 정보가 필요하거나, 실패 원인이 범위 밖에 있다.
-```
-
-### Tags
-
-추천 GitHub topics:
-
-```text
-ai-agents, codex, claude-code, gemini, cursor, windsurf, cline,
-goal-management, agent-tools, prompt-engineering, markdown, github-issues
 ```
