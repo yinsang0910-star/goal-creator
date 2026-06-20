@@ -13,21 +13,39 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "save_goal.py"
 BODY = """# Smoke Goal
 
-```text
-/goal Confirm save_goal.py writes a goal file.
+## Short Command
 
-Verify:
+```text
+/goal Execute the work defined in `.goals/example.md`. Read the full goal file first and follow its sections.
+```
+
+## Objective
+
+Confirm save_goal.py writes a full-spec goal file.
+
+## Success Criteria
+
 - File exists.
 
-Boundaries:
+## Scope
+
+Allowed:
 - Write only inside the temp directory.
 
-Stop:
+Forbidden:
+- Do not touch the real repository.
+
+## Verification
+
+- Saved file contains frontmatter and short command.
+
+## Stop
+
 - Checks pass.
 
-Pause:
+## Pause
+
 - Script fails.
-```
 """
 
 
@@ -64,8 +82,11 @@ def main() -> int:
 
         text = first.read_text(encoding="utf-8")
         assert 'title: "创建目标"' in text
+        assert "mode: full-spec" in text
         assert "formats:\n  - codex" in text
-        assert "/goal Confirm save_goal.py" in text
+        assert "## Short Command" in text
+        assert "/goal Execute the work defined" in text
+        assert "## Verification" in text
 
     print("smoke ok")
     return 0

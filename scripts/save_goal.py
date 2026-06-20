@@ -47,6 +47,7 @@ def main() -> int:
     parser.add_argument("--title", required=True, help="Goal title.")
     parser.add_argument("--status", default="draft", help="Goal status.")
     parser.add_argument("--language", default="", help="Goal language.")
+    parser.add_argument("--mode", default="full-spec", help="Goal mode.")
     parser.add_argument("--format", action="append", dest="formats", default=[])
     parser.add_argument("--body-file", help="Read goal body from a file.")
     parser.add_argument("--dir", default=".goals", help="Output directory.")
@@ -73,6 +74,7 @@ def main() -> int:
         f"created: {today}\n"
         f"status: {args.status}\n"
         f"{language_line}"
+        f"mode: {args.mode}\n"
         "formats:\n"
         f"{format_lines}"
         "---\n\n"

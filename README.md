@@ -7,7 +7,7 @@
 <p align="center">
   A concise goal maker for AI coding agents.
   <br>
-  Turn a fuzzy request into a short goal file your agent can actually finish.
+  Keep the chat command short. Put the full plan in a saved goal file.
 </p>
 
 <p align="center">
@@ -34,7 +34,7 @@
 
 ## English
 
-`goal-creator` is a small skill for turning vague work into compact, saved goals.
+`goal-creator` is a small skill for turning vague work into compact commands plus complete saved goals.
 
 Think of it as a tidy little mission writer:
 
@@ -43,14 +43,15 @@ Think of it as a tidy little mission writer:
         ↓
 .goals/2026-06-20-refactor-backtest-module.md
         ↓
-A short Codex / Claude / Gemini / Cursor / GitHub-ready goal
+A short launcher plus a complete Codex / Claude / Gemini / Cursor / GitHub-ready goal spec
 ```
 
-It avoids giant prompt contracts. A useful goal needs only enough structure to keep the agent on track.
+It avoids giant chat prompts. The chat command stays short; the saved `.goals/*.md` file keeps the full plan.
 
 ### What It Does
 
-- Creates concise goals from plain-language requests.
+- Creates concise launcher commands from plain-language requests.
+- Saves full execution specs for detailed work.
 - Saves goals into the current project under `.goals/`.
 - Follows the user's language.
 - Renders mainstream agent formats:
@@ -109,7 +110,7 @@ Pause:
 
 ## 中文
 
-`goal-creator` 是一个给 AI 编程 Agent 用的小工具：把模糊需求变成简洁、可保存、可执行的目标文件。
+`goal-creator` 是一个给 AI 编程 Agent 用的小工具：把模糊需求变成短启动命令和完整目标文件。
 
 你可以把它理解成“任务翻译器”：
 
@@ -118,14 +119,15 @@ Pause:
         ↓
 .goals/2026-06-20-refactor-backtest-module.md
         ↓
-一份 Codex / Claude / Gemini / Cursor / GitHub 都看得懂的短目标
+一条短启动命令 + 一份 Codex / Claude / Gemini / Cursor / GitHub 都看得懂的完整目标文件
 ```
 
-它不喜欢又长又厚的提示词合同。一个好目标只需要让 Agent 知道：做什么、怎么验收、哪里不能碰、什么时候停。
+它不把又长又厚的提示词合同塞进聊天框。聊天里的 `/goal` 保持短，完整流程放进 `.goals/*.md`。
 
 ### 它能做什么
 
-- 把自然语言需求压缩成短目标。
+- 把自然语言需求压缩成短启动命令。
+- 把完整执行流程保存成目标文件。
 - 自动保存到当前项目的 `.goals/` 目录。
 - 跟随用户语言输出。
 - 支持主流 Agent 格式：
@@ -184,7 +186,7 @@ Pause:
 
 ## 日本語
 
-`goal-creator` は、あいまいな作業依頼を短く実行しやすいゴールファイルに変換する AI コーディング Agent 向けの skill です。
+`goal-creator` は、あいまいな作業依頼を短い起動コマンドと完全なゴールファイルに変換する AI コーディング Agent 向けの skill です。
 
 イメージは、小さな「ミッション作成係」です。
 
@@ -193,14 +195,15 @@ Pause:
         ↓
 .goals/2026-06-20-refactor-backtest-module.md
         ↓
-Codex / Claude / Gemini / Cursor / GitHub で使える短いゴール
+短い起動コマンド + Codex / Claude / Gemini / Cursor / GitHub で使える完全なゴール仕様
 ```
 
-長すぎるプロンプト契約書は作りません。必要なのは、何をするか、どう確認するか、どこを触らないか、いつ止まるかです。
+長すぎるプロンプト契約書をチャット欄に詰め込みません。短いコマンドで開始し、詳細は `.goals/*.md` に保存します。
 
 ### できること
 
-- 普通の文章からコンパクトなゴールを作ります。
+- 普通の文章から短い起動コマンドを作ります。
+- 詳細な実行仕様をゴールファイルとして保存します。
 - 現在のプロジェクトの `.goals/` に保存します。
 - ユーザーの言語に合わせます。
 - 主な Agent 形式に対応します：
@@ -259,7 +262,7 @@ Pause:
 
 ## 한국어
 
-`goal-creator`는 모호한 작업 요청을 짧고 실행 가능한 goal 파일로 바꿔 주는 AI 코딩 Agent용 skill입니다.
+`goal-creator`는 모호한 작업 요청을 짧은 실행 명령과 완전한 goal 파일로 바꿔 주는 AI 코딩 Agent용 skill입니다.
 
 작은 “미션 정리 담당자”라고 생각하면 됩니다.
 
@@ -268,14 +271,15 @@ Pause:
         ↓
 .goals/2026-06-20-refactor-backtest-module.md
         ↓
-Codex / Claude / Gemini / Cursor / GitHub에서 바로 쓸 수 있는 짧은 goal
+짧은 실행 명령 + Codex / Claude / Gemini / Cursor / GitHub에서 쓸 수 있는 완전한 goal spec
 ```
 
-길고 무거운 프롬프트 계약서를 만들지 않습니다. 좋은 goal에는 무엇을 할지, 어떻게 확인할지, 어디를 건드리지 말지, 언제 멈출지만 있으면 충분합니다.
+길고 무거운 프롬프트 계약서를 채팅창에 넣지 않습니다. 채팅 명령은 짧게 유지하고, 자세한 실행 계획은 `.goals/*.md`에 저장합니다.
 
 ### 무엇을 하나요
 
-- 자연어 요청을 간결한 goal로 바꿉니다.
+- 자연어 요청을 짧은 실행 명령으로 바꿉니다.
+- 자세한 실행 spec을 goal 파일로 저장합니다.
 - 현재 프로젝트의 `.goals/` 디렉터리에 저장합니다.
 - 사용자의 언어를 따라갑니다.
 - 주요 Agent 형식을 지원합니다:
