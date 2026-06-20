@@ -1,0 +1,5 @@
+.goals/
+__pycache__/
+*.pyc
+dist/
+*.zip
