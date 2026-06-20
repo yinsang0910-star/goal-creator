@@ -16,7 +16,7 @@ BODY = """# Smoke Goal
 ## Short Command
 
 ```text
-/goal Execute the work defined in `.goals/example.md`. Read the full goal file first and follow its sections.
+/goal Read `.goals/example.md` first, then execute only the work defined there.
 ```
 
 ## Objective
@@ -85,7 +85,7 @@ def main() -> int:
         assert "mode: full-spec" in text
         assert "formats:\n  - codex" in text
         assert "## Short Command" in text
-        assert "/goal Execute the work defined" in text
+        assert "/goal Read `.goals/example.md` first" in text
         assert "## Verification" in text
 
     print("smoke ok")

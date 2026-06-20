@@ -6,7 +6,7 @@ description: Create concise launcher commands plus complete saved goal files for
 
 # Goal Creator
 
-Turn a user's task into a short chat command plus a complete goal spec saved under the current project's `.goals/` directory.
+Turn a user's task into a short manual launcher plus a complete goal spec saved under the current project's `.goals/` directory. Create the goal only; do not execute it unless the user separately asks to run it.
 
 ## Defaults
 
@@ -17,6 +17,7 @@ Turn a user's task into a short chat command plus a complete goal spec saved und
 - Default formats: `codex` and `markdown`.
 - If the user asks for all/mainstream formats, include: `codex`, `claude`, `gemini`, `cursor`, `github`, `markdown`.
 - Keep the chat command short. Put full detail in the saved goal file.
+- Creation is manual by default: output and save the goal, but do not start the work described by the goal.
 - Ask at most one question only when the missing answer changes risk, ownership, cost, or write location.
 
 ## Trigger Examples
@@ -41,14 +42,15 @@ Do not trigger for ordinary planning unless the user wants a saved goal, `/goal`
 
 Use this for most real work.
 
-- The returned `/goal` or task prompt is a short launcher.
+- The returned `/goal` or task prompt is a short manual launcher for the user to run later.
 - The saved `.goals/*.md` file is the complete execution contract.
-- The short command must explicitly tell the agent to read the saved file first and follow its sections.
+- The short command must explicitly tell the future executing agent to read the saved file first and follow its sections.
+- After creating the file, do not execute the short command.
 
 Codex launcher:
 
 ```text
-/goal Execute the work defined in `.goals/<file>.md`. Read the full goal file first, follow its Objective, Scope, Verification, Safety, Iteration, Stop, and Pause sections, and keep this command as the control frame. Stop only when the file's completion evidence is satisfied; pause if any pause condition is met.
+/goal Read `.goals/<file>.md` first, then execute only the work defined there. Follow its Objective, Scope, Verification, Safety, Iteration, Stop, and Pause sections. Stop only when the file's completion evidence is satisfied; pause if any pause condition is met.
 ```
 
 Saved file structure:
@@ -70,7 +72,7 @@ formats:
 ## Short Command
 
 ```text
-/goal Execute the work defined in `.goals/<file>.md`. Read the full goal file first...
+/goal Read `.goals/<file>.md` first, then execute only the work defined there...
 ```
 
 ## Objective
@@ -161,7 +163,7 @@ Pause:
 Full-spec launcher:
 
 ```text
-/goal Execute the work defined in `.goals/<file>.md`. Read the full goal file first, follow its Objective, Scope, Verification, Safety, Iteration, Stop, and Pause sections, and keep this command as the control frame. Stop only when the file's completion evidence is satisfied; pause if any pause condition is met.
+/goal Read `.goals/<file>.md` first, then execute only the work defined there. Follow its Objective, Scope, Verification, Safety, Iteration, Stop, and Pause sections. Stop only when the file's completion evidence is satisfied; pause if any pause condition is met.
 ```
 
 ### claude
@@ -269,3 +271,5 @@ Saved: .goals/<file>.md
 ````
 
 Add one short note only if a risky assumption was made.
+
+Do not continue into implementation. The user must paste or invoke the returned launcher when they want execution to begin.

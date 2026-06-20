@@ -47,6 +47,7 @@ A short launcher plus a complete Codex / Claude / Gemini / Cursor / GitHub-ready
 ```
 
 It avoids giant chat prompts. The chat command stays short; the saved `.goals/*.md` file keeps the full plan.
+Creating a goal does not execute it. Paste or invoke the returned launcher only when you want the agent to start.
 
 ### What It Does
 
@@ -131,6 +132,7 @@ Pause:
 ```
 
 它不把又长又厚的提示词合同塞进聊天框。聊天里的 `/goal` 保持短，完整流程放进 `.goals/*.md`。
+创建目标不会自动执行目标。只有当你粘贴或调用返回的启动命令时，Agent 才开始执行。
 
 ### 它能做什么
 
@@ -215,6 +217,7 @@ Pause:
 ```
 
 長すぎるプロンプト契約書をチャット欄に詰め込みません。短いコマンドで開始し、詳細は `.goals/*.md` に保存します。
+ゴールを作成しても自動実行はしません。返された起動コマンドを貼り付けたときだけ実行が始まります。
 
 ### できること
 
@@ -299,6 +302,7 @@ Pause:
 ```
 
 길고 무거운 프롬프트 계약서를 채팅창에 넣지 않습니다. 채팅 명령은 짧게 유지하고, 자세한 실행 계획은 `.goals/*.md`에 저장합니다.
+goal을 만든다고 바로 실행되지는 않습니다. 반환된 실행 명령을 붙여 넣거나 호출할 때만 Agent가 시작합니다.
 
 ### 무엇을 하나요
 

@@ -14,7 +14,7 @@ formats:
 ## Short Command
 
 ```text
-/goal Execute the work defined in `.goals/2026-06-20-goal-creator-v0-2.md`. Read the full goal file first, follow its Objective, Scope, Verification, Safety, Iteration, Stop, and Pause sections, and keep this command as the control frame. Stop only when the file's completion evidence is satisfied; pause if any pause condition is met.
+/goal Read `.goals/2026-06-20-goal-creator-v0-2.md` first, then execute only the work defined there. Follow its Objective, Scope, Verification, Safety, Iteration, Stop, and Pause sections. Stop only when the file's completion evidence is satisfied; pause if any pause condition is met.
 ```
 
 ## Objective
@@ -25,7 +25,8 @@ Upgrade `goal-creator` so the chat command stays short while the saved `.goals/*
 
 - `SKILL.md` describes `full-spec` as the default mode.
 - The saved file includes `Short Command`, objective, success criteria, scope, execution plan, verification, safety, iteration policy, stop, and pause.
-- The short Codex `/goal` points to the saved file and requires the agent to read it first.
+- The short Codex `/goal` points to the saved file and requires the future executing agent to read it first.
+- Creating the goal does not execute the goal.
 - The smoke test verifies `mode: full-spec` and the `Short Command` section.
 
 ## Scope
