@@ -1,7 +1,7 @@
 ---
 name: goal-creator
 version: 0.2.0
-description: Create concise saved goal files for Codex, Claude Code, Gemini, Cursor/Windsurf/Cline, GitHub issues, and generic Markdown. Use when the user asks to create, shorten, refine, save, version, or multi-format an agent goal, /goal command, objective, task spec, or goal file.
+description: Create concise launcher commands plus complete saved goal files for Codex, Claude Code, Gemini, Cursor/Windsurf/Cline, GitHub issues, and generic Markdown. Trigger when the user says create goal, make a goal, write a goal, save a goal, goal command, /goal, objective file, task objective, execution goal, 创建goal, 创建目标, 生成目标, 写目标, 保存目标, 目标指令, goal指令, 目标文件, 工作目标, 执行目标, or asks to turn a vague task into an agent-executable goal.
 ---
 
 # Goal Creator
@@ -18,6 +18,22 @@ Turn a user's task into a short chat command plus a complete goal spec saved und
 - If the user asks for all/mainstream formats, include: `codex`, `claude`, `gemini`, `cursor`, `github`, `markdown`.
 - Keep the chat command short. Put full detail in the saved goal file.
 - Ask at most one question only when the missing answer changes risk, ownership, cost, or write location.
+
+## Trigger Examples
+
+Use this skill for requests like:
+
+- `create a goal for this task`
+- `make a /goal for the refactor`
+- `save this as a goal file`
+- `turn this plan into an execution goal`
+- `创建 goal`
+- `创建目标`
+- `生成目标文件`
+- `写一个目标指令`
+- `把这个任务变成可执行目标`
+
+Do not trigger for ordinary planning unless the user wants a saved goal, `/goal` command, objective file, or agent-executable task contract.
 
 ## Modes
 
