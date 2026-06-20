@@ -1,5 +1,6 @@
 ---
 name: goal-creator
+version: 0.1.0
 description: Create concise saved goal files for Codex, Claude Code, Gemini, Cursor/Windsurf/Cline, GitHub issues, and generic Markdown. Use when the user asks to create, shorten, refine, save, version, or multi-format an agent goal, /goal command, objective, task spec, or goal file.
 ---
 
