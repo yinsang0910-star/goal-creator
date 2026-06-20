@@ -85,6 +85,14 @@ For every supported format:
 Use goal-creator to create a saved multi-format goal for building my first MVP.
 ```
 
+Post-install check:
+
+```text
+Use goal-creator to create and save a full-spec goal for a small README update.
+```
+
+You should see a new file under `.goals/`.
+
 ### Example Output
 
 ```text
@@ -160,6 +168,14 @@ Copy-Item -Recurse .\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
 ```text
 用 goal-creator 给我的第一个 MVP 创建一个多格式目标文件。
 ```
+
+安装后验证：
+
+```text
+用 goal-creator 给一次小型 README 更新创建并保存一个 full-spec 目标。
+```
+
+你应该能在 `.goals/` 目录下看到新文件。
 
 ### 输出长什么样
 
@@ -237,6 +253,14 @@ Use goal-creator to create and save a compact goal for refactoring the backtest 
 Use goal-creator to create a saved multi-format goal for building my first MVP.
 ```
 
+インストール後の確認：
+
+```text
+Use goal-creator to create and save a full-spec goal for a small README update.
+```
+
+`.goals/` に新しいファイルが作成されれば成功です。
+
 ### 出力例
 
 ```text
@@ -312,6 +336,14 @@ Use goal-creator to create and save a compact goal for refactoring the backtest 
 ```text
 Use goal-creator to create a saved multi-format goal for building my first MVP.
 ```
+
+설치 후 확인:
+
+```text
+Use goal-creator to create and save a full-spec goal for a small README update.
+```
+
+`.goals/` 아래에 새 파일이 생기면 정상입니다.
 
 ### 출력 예시
 
