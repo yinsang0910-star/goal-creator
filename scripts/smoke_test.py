@@ -11,12 +11,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "save_goal.py"
+SKILL = ROOT / "SKILL.md"
+FRONTMATTER_KEYS = {"name", "description"}
 BODY = """# Smoke Goal
 
 ## Short Command
 
 ```text
-/goal Read `.goals/example.md` first, then execute only the work defined there.
+/goal Read `.goals/example.md`; execute only that file.
 ```
 
 ## Objective
@@ -70,7 +72,20 @@ def run_save(tmp: Path, title: str) -> Path:
     return tmp / proc.stdout.strip()
 
 
+def check_skill_frontmatter() -> None:
+    text = SKILL.read_text(encoding="utf-8")
+    _, frontmatter, _ = text.split("---", 2)
+    keys = {
+        line.split(":", 1)[0]
+        for line in frontmatter.splitlines()
+        if line and not line.startswith(" ")
+    }
+    assert keys == FRONTMATTER_KEYS, keys
+
+
 def main() -> int:
+    check_skill_frontmatter()
+
     with tempfile.TemporaryDirectory() as raw:
         tmp = Path(raw)
         first = run_save(tmp, "创建目标")
@@ -85,8 +100,12 @@ def main() -> int:
         assert "mode: full-spec" in text
         assert "formats:\n  - codex" in text
         assert "## Short Command" in text
-        assert "/goal Read `.goals/example.md` first" in text
+        assert "/goal Read `.goals/example.md`; execute only that file." in text
         assert "## Verification" in text
+
+        skill_text = SKILL.read_text(encoding="utf-8")
+        assert "Quality bar before saving" in skill_text
+        assert "under 140 characters" in skill_text
 
     print("smoke ok")
     return 0

@@ -1,6 +1,5 @@
 ---
 name: goal-creator
-version: 0.2.0
 description: Create concise launcher commands plus complete saved goal files for Codex, Claude Code, Gemini, Cursor/Windsurf/Cline, GitHub issues, and generic Markdown. Trigger when the user says create goal, make a goal, write a goal, save a goal, goal command, /goal, objective file, task objective, execution goal, 创建goal, 创建目标, 生成目标, 写目标, 保存目标, 目标指令, goal指令, 目标文件, 工作目标, 执行目标, or asks to turn a vague task into an agent-executable goal.
 ---
 
@@ -16,7 +15,7 @@ Turn a user's task into a short manual launcher plus a complete goal spec saved 
 - Default mode: `full-spec`.
 - Default formats: `codex` and `markdown`.
 - If the user asks for all/mainstream formats, include: `codex`, `claude`, `gemini`, `cursor`, `github`, `markdown`.
-- Keep the chat command short. Put full detail in the saved goal file.
+- Keep the chat command under 140 characters when possible. Put all detail in the saved goal file.
 - Creation is manual by default: output and save the goal, but do not start the work described by the goal.
 - Ask at most one question only when the missing answer changes risk, ownership, cost, or write location.
 
@@ -44,13 +43,13 @@ Use this for most real work.
 
 - The returned `/goal` or task prompt is a short manual launcher for the user to run later.
 - The saved `.goals/*.md` file is the complete execution contract.
-- The short command must explicitly tell the future executing agent to read the saved file first and follow its sections.
+- The short command must only point to the saved file and say to execute only that file.
 - After creating the file, do not execute the short command.
 
 Codex launcher:
 
 ```text
-/goal Read `.goals/<file>.md` first, then execute only the work defined there. Follow its Objective, Scope, Verification, Safety, Iteration, Stop, and Pause sections. Stop only when the file's completion evidence is satisfied; pause if any pause condition is met.
+/goal Read `.goals/<file>.md`; execute only that file.
 ```
 
 Saved file structure:
@@ -72,7 +71,7 @@ formats:
 ## Short Command
 
 ```text
-/goal Read `.goals/<file>.md` first, then execute only the work defined there...
+/goal Read `.goals/<file>.md`; execute only that file.
 ```
 
 ## Objective
@@ -116,6 +115,17 @@ Forbidden:
 - ...
 ```
 
+Quality bar before saving:
+
+- Objective names one concrete outcome and the main artifact or behavior change.
+- Success Criteria has 3-6 observable bullets, including the user-visible result.
+- Scope has both Allowed and Forbidden bullets when the task touches code, files, data, money, credentials, or deployment.
+- Execution Plan has 4-8 ordered steps that a fresh agent can follow without guessing.
+- Verification has 2-5 runnable commands, artifact checks, screenshots, or review evidence.
+- Safety / Constraints names no-touch areas and any destructive, credential, production, trading, privacy, or cost risks.
+- Stop is a concrete completion evidence, not "when done".
+- Pause names the first human or external blocker that should stop the agent.
+
 ### compact
 
 Use only when the user asks for a small inline goal or the task is trivial.
@@ -131,12 +141,12 @@ Canonical fields:
 - `title`: short noun phrase
 - `objective`: one concrete outcome
 - `verify`: 2-5 runnable checks, artifacts, screenshots, or review evidence
-- `boundaries`: 1-4 write scopes and explicit no-touch areas
+- `boundaries`: 2-6 write scopes and explicit no-touch areas
 - `stop`: one completion condition
 - `pause`: one human/external blocker condition
 - `notes`: optional assumptions, only when useful
 
-For `full-spec`, include execution plan, verification, safety/constraints, iteration policy, stop, and pause. For high-risk work such as money, trading, security, production data, destructive operations, or credentials, make safety explicit.
+For `full-spec`, include enough detail that a new agent can execute from the saved file alone: execution plan, verification, safety/constraints, iteration policy, stop, and pause. For high-risk work such as money, trading, security, production data, destructive operations, or credentials, make safety explicit.
 
 ## Renderers
 
@@ -163,7 +173,7 @@ Pause:
 Full-spec launcher:
 
 ```text
-/goal Read `.goals/<file>.md` first, then execute only the work defined there. Follow its Objective, Scope, Verification, Safety, Iteration, Stop, and Pause sections. Stop only when the file's completion evidence is satisfied; pause if any pause condition is met.
+/goal Read `.goals/<file>.md`; execute only that file.
 ```
 
 ### claude

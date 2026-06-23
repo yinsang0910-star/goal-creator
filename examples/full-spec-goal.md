@@ -14,7 +14,7 @@ formats:
 ## Short Command
 
 ```text
-/goal Read `.goals/2026-06-20-goal-creator-v0-2.md` first, then execute only the work defined there. Follow its Objective, Scope, Verification, Safety, Iteration, Stop, and Pause sections. Stop only when the file's completion evidence is satisfied; pause if any pause condition is met.
+/goal Read `.goals/2026-06-20-goal-creator-v0-2.md`; execute only that file.
 ```
 
 ## Objective
