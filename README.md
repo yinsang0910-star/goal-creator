@@ -97,23 +97,12 @@ You should see a new file under `.goals/`.
 ### Example Output
 
 ```text
-/goal Refactor the backtest module to reduce duplication while preserving current behavior.
+Saved: .goals/2026-06-20-refactor-backtest-module.md
 
-Verify:
-- Run the existing backtest-related tests.
-- Run one sample backtest command and capture output.
-- Confirm no public CLI behavior changed unless explicitly listed.
-
-Boundaries:
-- Modify only backtest code and directly related tests.
-- Do not change storage schema, live trading code, or credentials.
-
-Stop:
-- Tests pass and the sample backtest output is preserved or explained.
-
-Pause:
-- Required behavior is ambiguous, credentials are needed, or failures point outside the module.
+/goal Read `.goals/2026-06-20-refactor-backtest-module.md`; execute only that file.
 ```
+
+The saved file contains the full objective, success criteria, scope, execution plan, verification, safety constraints, stop condition, and pause condition.
 
 ---
 
@@ -182,23 +171,12 @@ Copy-Item -Recurse .\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
 ### 输出长什么样
 
 ```text
-/goal 在保持现有行为不变的前提下，重构回测模块以减少重复代码。
+Saved: .goals/2026-06-20-refactor-backtest-module.md
 
-Verify:
-- 运行现有回测相关测试。
-- 运行一次示例回测命令并保存输出。
-- 确认公开 CLI 行为没有变化，除非目标中明确列出。
-
-Boundaries:
-- 只修改回测代码和直接相关测试。
-- 不修改存储 schema、实盘交易代码或凭证。
-
-Stop:
-- 测试通过，示例回测输出被保留或差异已说明。
-
-Pause:
-- 需求行为不明确、需要凭证，或失败原因指向回测模块之外。
+/goal Read `.goals/2026-06-20-refactor-backtest-module.md`; execute only that file.
 ```
+
+完整目标、成功标准、范围、执行计划、验证方式、安全约束、停止条件和暂停条件都保存在目标文件里。
 
 ---
 
@@ -267,23 +245,12 @@ Use goal-creator to create and save a full-spec goal for a small README update.
 ### 出力例
 
 ```text
-/goal 既存の動作を保ったまま、バックテストモジュールの重複を減らす。
+Saved: .goals/2026-06-20-refactor-backtest-module.md
 
-Verify:
-- 既存のバックテスト関連テストを実行する。
-- サンプルのバックテストコマンドを 1 回実行して出力を保存する。
-- 明示されていない CLI の挙動変更がないことを確認する。
-
-Boundaries:
-- バックテストコードと直接関連するテストだけを変更する。
-- ストレージ schema、ライブ取引コード、認証情報は変更しない。
-
-Stop:
-- テストが通り、サンプル出力が保たれるか差分が説明されている。
-
-Pause:
-- 仕様があいまい、認証情報が必要、または失敗原因が対象外にある。
+/goal Read `.goals/2026-06-20-refactor-backtest-module.md`; execute only that file.
 ```
+
+完全な目的、成功条件、スコープ、実行計画、検証方法、安全制約、停止条件、一時停止条件は保存されたゴールファイルに入ります。
 
 ---
 
@@ -352,20 +319,9 @@ Use goal-creator to create and save a full-spec goal for a small README update.
 ### 출력 예시
 
 ```text
-/goal 기존 동작을 유지하면서 백테스트 모듈의 중복을 줄인다.
+Saved: .goals/2026-06-20-refactor-backtest-module.md
 
-Verify:
-- 기존 백테스트 관련 테스트를 실행한다.
-- 샘플 백테스트 명령을 한 번 실행하고 출력을 저장한다.
-- 명시하지 않은 공개 CLI 동작 변경이 없는지 확인한다.
-
-Boundaries:
-- 백테스트 코드와 직접 관련된 테스트만 수정한다.
-- 저장소 schema, 라이브 트레이딩 코드, 인증 정보는 변경하지 않는다.
-
-Stop:
-- 테스트가 통과하고 샘플 출력이 유지되거나 차이가 설명된다.
-
-Pause:
-- 요구사항이 모호하거나, 인증 정보가 필요하거나, 실패 원인이 범위 밖에 있다.
+/goal Read `.goals/2026-06-20-refactor-backtest-module.md`; execute only that file.
 ```
+
+전체 목표, 성공 기준, 범위, 실행 계획, 검증 방법, 안전 제약, 중지 조건, 일시 중지 조건은 저장된 goal 파일에 들어갑니다.
