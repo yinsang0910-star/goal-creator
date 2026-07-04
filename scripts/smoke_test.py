@@ -13,50 +13,50 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "save_goal.py"
 SKILL = ROOT / "SKILL.md"
 FRONTMATTER_KEYS = {"name", "description"}
-BODY = """# Smoke Goal
+BODY = """# 冒烟目标
 
-## Short Command
+## 短启动命令
 
 ```text
-/goal Read `.goals/example.md`; execute only that file.
+/goal 读取 `.goals/example.md`；只执行该文件。
 ```
 
-## Objective
+## 目标
 
-Confirm save_goal.py writes a full-spec goal file.
+确认 save_goal.py 能写入完整目标文件。
 
-## Original Request
+## 原始需求
 
-Create a saved full-spec goal without narrowing the user's requested outcome.
+创建一个不缩小用户原始目标的完整目标文件。
 
-## Non-Negotiables
+## 不可降级项
 
-- Keep the short launcher.
-- Keep the full saved goal contract.
+- 保留短启动命令。
+- 保留完整目标合同。
 
-## Success Criteria
+## 成功标准
 
-- File exists.
+- 文件存在。
 
-## Scope
+## 范围
 
-Allowed:
-- Write only inside the temp directory.
+允许:
+- 只写入临时目录。
 
-Forbidden:
-- Do not touch the real repository.
+禁止:
+- 不触碰真实仓库。
 
-## Verification
+## 验证
 
-- Saved file contains frontmatter and short command.
+- 保存文件包含 frontmatter 和短启动命令。
 
-## Stop
+## 停止
 
-- Checks pass.
+- 检查通过。
 
-## Pause
+## 暂停
 
-- Script fails.
+- 脚本失败。
 """
 
 
@@ -108,15 +108,24 @@ def main() -> int:
         assert 'title: "创建目标"' in text
         assert "mode: full-spec" in text
         assert "formats:\n  - codex" in text
-        assert "## Short Command" in text
-        assert "/goal Read `.goals/example.md`; execute only that file." in text
-        assert "## Original Request" in text
-        assert "## Non-Negotiables" in text
-        assert "## Verification" in text
+        assert "## 短启动命令" in text
+        assert "/goal 读取 `.goals/example.md`；只执行该文件。" in text
+        assert "## 原始需求" in text
+        assert "## 不可降级项" in text
+        assert "## 验证" in text
+        assert "## Objective" not in text
+        assert "## Success Criteria" not in text
+        assert "Allowed:" not in text
+        assert "Forbidden:" not in text
 
         skill_text = SKILL.read_text(encoding="utf-8")
         assert "Quality bar before saving" in skill_text
         assert "under 140 characters" in skill_text
+        assert "Use one target language for all visible headings and prose" in skill_text
+        assert "do not keep English headings" in skill_text
+        assert "Chinese label map" in skill_text
+        assert "`Allowed` -> `允许`" in skill_text
+        assert "render visible field labels in the target language" in skill_text
         assert "Original Request preserves" in skill_text
         assert "must not weaken user-provided acceptance criteria" in skill_text
         assert "Do not silently reduce scope" in skill_text

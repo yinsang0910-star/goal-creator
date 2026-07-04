@@ -9,8 +9,10 @@ Turn a user's task into a short manual launcher plus a complete goal spec saved 
 
 ## Defaults
 
-- Follow the user's language for goal content.
-- Use ASCII field labels for stability: `Original Request`, `Objective`, `Success Criteria`, `Verify`, `Boundaries`, `Stop`, `Pause`.
+- Follow the user's language for goal content, including headings, launcher wording, and saved-file prose.
+- Use canonical field names internally for stability, but render visible field labels in the target language.
+- Keep only command names, file paths, code identifiers, format names, and proper nouns in their original language.
+- Do not mix English labels into a non-English goal unless the user explicitly asks for English.
 - Save automatically unless the target directory is unclear or unsafe.
 - Default mode: `full-spec`.
 - Default formats: `codex` and `markdown`.
@@ -43,16 +45,24 @@ Use this for most real work.
 
 - The returned `/goal` or task prompt is a short manual launcher for the user to run later.
 - The saved `.goals/*.md` file is the complete execution contract.
-- The short command must only point to the saved file and say to execute only that file.
+- The short command must only point to the saved file and say to execute only that file in the target language.
 - After creating the file, do not execute the short command.
 
-Codex launcher:
+Codex launcher examples:
+
+English:
 
 ```text
 /goal Read `.goals/<file>.md`; execute only that file.
 ```
 
-Saved file structure:
+Chinese:
+
+```text
+/goal 读取 `.goals/<file>.md`；只执行该文件。
+```
+
+Saved file structure (English example; translate all visible labels for non-English goals):
 
 ```markdown
 ---
@@ -123,8 +133,27 @@ Forbidden:
 - ...
 ```
 
+Chinese label map:
+
+- `Short Command` -> `短启动命令`
+- `Objective` -> `目标`
+- `Original Request` -> `原始需求`
+- `Non-Negotiables` -> `不可降级项`
+- `Success Criteria` -> `成功标准`
+- `Scope` -> `范围`
+- `Allowed` -> `允许`
+- `Forbidden` -> `禁止`
+- `Execution Plan` -> `执行计划`
+- `Verification` -> `验证`
+- `Safety / Constraints` -> `安全 / 约束`
+- `Iteration Policy` -> `迭代策略`
+- `Stop` -> `停止`
+- `Pause` -> `暂停`
+
 Quality bar before saving:
 
+- Use one target language for all visible headings and prose. Exceptions: command names, file paths, code identifiers, format names, and proper nouns.
+- For non-English goals, translate labels and launcher wording; do not keep English headings like `Objective`, `Success Criteria`, `Allowed`, or `Forbidden`.
 - Objective names one concrete outcome and the main artifact or behavior change, without replacing the user's request with a smaller substitute.
 - Original Request preserves the user's requested outcome/design intent before any agent decomposition.
 - Non-Negotiables lists user-provided acceptance criteria, design requirements, no-touch boundaries, and must-keep behaviors.
@@ -146,7 +175,7 @@ Keep normal compact rendered blocks under 12 lines.
 
 ## Canonical Fields
 
-Use one canonical goal, then render it into requested formats.
+Use one canonical goal, then render it into requested formats. Canonical field names are internal; visible labels must follow the target language.
 
 Canonical fields:
 
@@ -163,6 +192,8 @@ Canonical fields:
 For `full-spec`, include enough detail that a new agent can execute from the saved file alone: execution plan, verification, safety/constraints, iteration policy, stop, and pause. For high-risk work such as money, trading, security, production data, destructive operations, or credentials, make safety explicit.
 
 ## Renderers
+
+Renderer snippets are English defaults. Translate visible labels for non-English targets before returning or saving output.
 
 ### codex
 

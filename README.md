@@ -48,6 +48,7 @@ A short launcher plus a complete Codex / Claude / Gemini / Cursor / GitHub-ready
 
 It avoids giant chat prompts. The chat command stays short; the saved `.goals/*.md` file keeps the full plan.
 It also preserves the original request so later execution cannot quietly weaken the acceptance bar.
+For non-English goals, headings, labels, launcher wording, and prose stay in the target language.
 Creating a goal does not execute it. Paste or invoke the returned launcher only when you want the agent to start.
 
 ### What It Does
@@ -55,7 +56,7 @@ Creating a goal does not execute it. Paste or invoke the returned launcher only 
 - Creates concise launcher commands from plain-language requests.
 - Saves full execution specs for detailed work.
 - Saves goals into the current project under `.goals/`.
-- Follows the user's language.
+- Follows the user's language for headings and prose.
 - Renders mainstream agent formats:
   - Codex `/goal`
   - Claude Code
@@ -123,6 +124,7 @@ The saved file contains the original request, non-negotiables, full objective, s
 
 它不把又长又厚的提示词合同塞进聊天框。聊天里的 `/goal` 保持短，完整流程放进 `.goals/*.md`。
 它会保留原始需求，避免后续执行时悄悄降低验收标准。
+非英文目标会保持同一种目标语言，包括标题、字段标签、启动命令和正文。
 创建目标不会自动执行目标。只有当你粘贴或调用返回的启动命令时，Agent 才开始执行。
 
 ### 它能做什么
@@ -130,7 +132,7 @@ The saved file contains the original request, non-negotiables, full objective, s
 - 把自然语言需求压缩成短启动命令。
 - 把完整执行流程保存成目标文件。
 - 自动保存到当前项目的 `.goals/` 目录。
-- 跟随用户语言输出。
+- 标题和正文都跟随用户语言输出。
 - 支持主流 Agent 格式：
   - Codex `/goal`
   - Claude Code
