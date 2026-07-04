@@ -47,6 +47,7 @@ A short launcher plus a complete Codex / Claude / Gemini / Cursor / GitHub-ready
 ```
 
 It avoids giant chat prompts. The chat command stays short; the saved `.goals/*.md` file keeps the full plan.
+It also preserves the original request so later execution cannot quietly weaken the acceptance bar.
 Creating a goal does not execute it. Paste or invoke the returned launcher only when you want the agent to start.
 
 ### What It Does
@@ -102,7 +103,7 @@ Saved: .goals/2026-06-20-refactor-backtest-module.md
 /goal Read `.goals/2026-06-20-refactor-backtest-module.md`; execute only that file.
 ```
 
-The saved file contains the full objective, success criteria, scope, execution plan, verification, safety constraints, stop condition, and pause condition.
+The saved file contains the original request, non-negotiables, full objective, success criteria, scope, execution plan, verification, safety constraints, stop condition, and pause condition.
 
 ---
 
@@ -121,6 +122,7 @@ The saved file contains the full objective, success criteria, scope, execution p
 ```
 
 它不把又长又厚的提示词合同塞进聊天框。聊天里的 `/goal` 保持短，完整流程放进 `.goals/*.md`。
+它会保留原始需求，避免后续执行时悄悄降低验收标准。
 创建目标不会自动执行目标。只有当你粘贴或调用返回的启动命令时，Agent 才开始执行。
 
 ### 它能做什么
@@ -176,7 +178,7 @@ Saved: .goals/2026-06-20-refactor-backtest-module.md
 /goal Read `.goals/2026-06-20-refactor-backtest-module.md`; execute only that file.
 ```
 
-完整目标、成功标准、范围、执行计划、验证方式、安全约束、停止条件和暂停条件都保存在目标文件里。
+原始需求、不可降级项、完整目标、成功标准、范围、执行计划、验证方式、安全约束、停止条件和暂停条件都保存在目标文件里。
 
 ---
 

@@ -25,6 +25,15 @@ BODY = """# Smoke Goal
 
 Confirm save_goal.py writes a full-spec goal file.
 
+## Original Request
+
+Create a saved full-spec goal without narrowing the user's requested outcome.
+
+## Non-Negotiables
+
+- Keep the short launcher.
+- Keep the full saved goal contract.
+
 ## Success Criteria
 
 - File exists.
@@ -101,11 +110,17 @@ def main() -> int:
         assert "formats:\n  - codex" in text
         assert "## Short Command" in text
         assert "/goal Read `.goals/example.md`; execute only that file." in text
+        assert "## Original Request" in text
+        assert "## Non-Negotiables" in text
         assert "## Verification" in text
 
         skill_text = SKILL.read_text(encoding="utf-8")
         assert "Quality bar before saving" in skill_text
         assert "under 140 characters" in skill_text
+        assert "Original Request preserves" in skill_text
+        assert "must not weaken user-provided acceptance criteria" in skill_text
+        assert "Do not silently reduce scope" in skill_text
+        assert "saved goal is the higher-level contract" in skill_text
 
     print("smoke ok")
     return 0

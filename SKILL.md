@@ -10,7 +10,7 @@ Turn a user's task into a short manual launcher plus a complete goal spec saved 
 ## Defaults
 
 - Follow the user's language for goal content.
-- Use ASCII field labels for stability: `Objective`, `Verify`, `Boundaries`, `Stop`, `Pause`.
+- Use ASCII field labels for stability: `Original Request`, `Objective`, `Success Criteria`, `Verify`, `Boundaries`, `Stop`, `Pause`.
 - Save automatically unless the target directory is unclear or unsafe.
 - Default mode: `full-spec`.
 - Default formats: `codex` and `markdown`.
@@ -76,7 +76,15 @@ formats:
 
 ## Objective
 
-<one concrete outcome>
+<one concrete outcome that preserves the user's original intent>
+
+## Original Request
+
+<the user's requested outcome/design intent, kept without narrowing>
+
+## Non-Negotiables
+
+- ...
 
 ## Success Criteria
 
@@ -117,14 +125,18 @@ Forbidden:
 
 Quality bar before saving:
 
-- Objective names one concrete outcome and the main artifact or behavior change.
-- Success Criteria has 3-6 observable bullets, including the user-visible result.
+- Objective names one concrete outcome and the main artifact or behavior change, without replacing the user's request with a smaller substitute.
+- Original Request preserves the user's requested outcome/design intent before any agent decomposition.
+- Non-Negotiables lists user-provided acceptance criteria, design requirements, no-touch boundaries, and must-keep behaviors.
+- Success Criteria has 3-6 observable bullets, including the user-visible result, and must not weaken user-provided acceptance criteria.
 - Scope has both Allowed and Forbidden bullets when the task touches code, files, data, money, credentials, or deployment.
 - Execution Plan has 4-8 ordered steps that a fresh agent can follow without guessing.
-- Verification has 2-5 runnable commands, artifact checks, screenshots, or review evidence.
+- Verification has 2-5 runnable commands, artifact checks, screenshots, or review evidence that test the requested outcome, not only a reduced implementation.
 - Safety / Constraints names no-touch areas and any destructive, credential, production, trading, privacy, or cost risks.
 - Stop is a concrete completion evidence, not "when done".
 - Pause names the first human or external blocker that should stop the agent.
+- Do not silently reduce scope. If constraints require a smaller first step, keep the full request in `Original Request`, put the reduction in `Pause` or assumptions needing confirmation, and do not present the reduced scope as the final goal.
+- When used with planning, TDD, verification, or superpowers workflows, the saved goal is the higher-level contract: later skills may decompose execution, but must not weaken `Objective`, `Non-Negotiables`, `Success Criteria`, or `Verification`.
 
 ### compact
 
@@ -139,7 +151,9 @@ Use one canonical goal, then render it into requested formats.
 Canonical fields:
 
 - `title`: short noun phrase
-- `objective`: one concrete outcome
+- `original_request`: the user's requested outcome/design intent, not narrowed
+- `objective`: one concrete outcome that preserves the original request
+- `non_negotiables`: user-provided acceptance criteria, design requirements, no-touch boundaries, and must-keep behaviors
 - `verify`: 2-5 runnable checks, artifacts, screenshots, or review evidence
 - `boundaries`: 2-6 write scopes and explicit no-touch areas
 - `stop`: one completion condition
