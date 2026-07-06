@@ -108,6 +108,18 @@ Create a normal full-spec goal:
 Use goal-creator to create and save a full-spec goal for <your task>.
 ```
 
+Create a short copyable goal:
+
+```text
+Use goal-creator to create a compact goal for <your task>.
+```
+
+Review an existing goal:
+
+```text
+Use goal-creator to review this goal for missing verification, weak boundaries, language mixing, and multi-agent gaps.
+```
+
 Create a goal that also prepares Codex subagent capacity:
 
 ```text
@@ -121,6 +133,12 @@ Run a saved goal later:
 ```
 
 Full-spec goals include multi-agent coordination by default. The executing main session must try substantial low-conflict slices first, consume each subagent handoff, merge serially, and run final project-level verification.
+
+Saved full-spec goals can be checked locally:
+
+```powershell
+python scripts\lint_goal_file.py .goals\<file>.md
+```
 
 ### Example Output
 
@@ -210,6 +228,18 @@ Copy-Item -Recurse .\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
 用 goal-creator 为“<你的任务>”创建并保存一个 full-spec 目标。
 ```
 
+创建短的可复制目标：
+
+```text
+用 goal-creator 为“<你的任务>”创建一个 compact 目标。
+```
+
+检查已有目标：
+
+```text
+用 goal-creator 检查这个 goal 是否缺少验证、边界、暂停条件，是否中英混用，是否缺少多代理协同。
+```
+
 创建 Codex 子代理并发配置目标：
 
 ```text
@@ -223,6 +253,12 @@ Copy-Item -Recurse .\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
 ```
 
 full-spec 目标默认包含多代理协同规则。未来执行的主会话必须先尝试拆分实质性、低冲突切片，消费每个子代理交接结果，串行合并，并运行最终项目级验证。
+
+保存后的 full-spec 目标可以本地检查：
+
+```powershell
+python scripts\lint_goal_file.py .goals\<file>.md
+```
 
 ### 输出长什么样
 

@@ -82,10 +82,37 @@ Forbidden:
 
 - Full-spec goals default to multi-agent-first execution.
 - Main session must first attempt at least two substantial low-conflict slices; if impossible, record the reason in `Pause`.
-- Require a slice table with owner, allowed files, forbidden files, expected output, verification, and merge risk before dispatch.
-- Require every subagent to return changed files, verification commands and results, risks, and handoff notes.
-- Main session must consume each subagent result, merge serially, run project-level verification, and report each contribution.
-- Reject subagent work that crosses file boundaries, skips verification, weakens the goal, or cannot be merged from the handoff.
+
+## Slice Table
+
+| Slice | Owner | Allowed Files | Forbidden Files | Expected Output | Verification | Merge Risk |
+| --- | --- | --- | --- | --- | --- | --- |
+| Skill rules | subagent | SKILL.md | unrelated files | default multi-agent contract documented | `python scripts/smoke_test.py` | medium |
+| Validation | subagent | scripts/smoke_test.py, scripts/lint_goal_file.py | unrelated files | regression checks cover goal quality | `python scripts/smoke_test.py` | low |
+
+## Subagent Deliverables
+
+- Slice name
+- Changed files
+- Key implementation notes
+- Verification commands
+- Verification results
+- Known risks
+- Handoff notes
+- Any boundary crossing needed
+
+## Merge Policy
+
+- Dispatch independent slices first.
+- Main session consumes each subagent result before merging.
+- Shared files are merged serially by the main session.
+- Final verification runs after all adopted results are merged.
+
+## Rejection Conditions
+
+- Reject subagent work that crosses file boundaries.
+- Reject work that skips verification or weakens the goal.
+- Reject work that cannot be understood or merged from the handoff.
 
 ## Codex Subagent Capacity Setup
 

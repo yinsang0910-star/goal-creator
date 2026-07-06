@@ -17,6 +17,8 @@ Turn a user's task into a short manual launcher plus a complete goal spec saved 
 - Default mode: `full-spec`.
 - Default formats: `codex` and `markdown`.
 - If the user asks for all/mainstream formats, include: `codex`, `claude`, `gemini`, `cursor`, `github`, `markdown`.
+- Use `compact` when the user asks for a short inline goal, direct copyable `/goal`, or a trivial task.
+- Use `review` when the user asks to inspect, audit, compare, improve, lint, or fix an existing goal.
 - Full-spec goals default to multi-agent-first execution: include the multi-agent collaboration contract and require the future main session to attempt parallel slice dispatch before implementation.
 - If the user asks to configure Codex subagent concurrency or capacity, include the Codex subagent capacity setup contract.
 - Keep the chat command under 140 characters when possible. Put all detail in the saved goal file.
@@ -36,6 +38,9 @@ Use this skill for requests like:
 - `生成目标文件`
 - `写一个目标指令`
 - `把这个任务变成可执行目标`
+- `检查这个 goal`
+- `review this goal`
+- `lint goal`
 
 Do not trigger for ordinary planning unless the user wants a saved goal, `/goal` command, objective file, or agent-executable task contract.
 
@@ -309,7 +314,22 @@ codex --strict-config doctor --summary --ascii
 
 Use only when the user asks for a small inline goal or the task is trivial.
 
-Keep normal compact rendered blocks under 12 lines.
+Keep normal compact rendered blocks under 12 lines. For compact mode, prioritize a direct copyable command over a saved full-spec file unless the user asks to save it.
+
+### review
+
+Use when the user provides an existing goal and asks to review, inspect, compare, improve, lint, or fix it.
+
+Check for:
+
+- Missing original request, non-negotiables, success criteria, verification, scope, stop, or pause.
+- Silent scope reduction or weakened acceptance criteria.
+- Over-broad boundaries or missing no-touch areas.
+- Missing multi-agent sections in a full-spec goal.
+- English headings or labels inside a non-English goal.
+- Long launcher, placeholders, vague verification, or fake parallel work.
+
+Return findings first, then a corrected goal only if the user asks for one or the fix is small.
 
 ## Canonical Fields
 
@@ -450,6 +470,12 @@ Resolve `scripts/save_goal.py` relative to this `SKILL.md` file, but run it from
 The script writes to `.goals/YYYY-MM-DD-slug.md` in the current working directory. It creates `.goals/` if needed and avoids overwriting by appending `-2`, `-3`, etc.
 
 If the script is unavailable, create the same file manually.
+
+After saving a full-spec goal, validate it with `scripts/lint_goal_file.py` when available:
+
+```bash
+python scripts/lint_goal_file.py .goals/<file>.md
+```
 
 ## Response
 

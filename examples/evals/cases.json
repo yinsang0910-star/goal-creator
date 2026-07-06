@@ -1,0 +1,42 @@
+[
+  {
+    "name": "zh-full-spec-mvp",
+    "request": "用 goal-creator 为“做一个本地习惯追踪器 MVP”创建并保存一个 full-spec 目标。",
+    "mode": "full-spec",
+    "language": "zh",
+    "must_include": ["原始需求", "不可降级项", "多代理协同", "切片表", "验证", "暂停"],
+    "must_not_include": ["## Objective", "## Success Criteria", "Allowed:", "Forbidden:"]
+  },
+  {
+    "name": "codex-subagent-capacity",
+    "request": "用 goal-creator 创建并保存一个配置 Codex 子代理并发上限的目标。",
+    "mode": "full-spec",
+    "language": "zh",
+    "must_include": ["~/.codex/config.toml", "max_threads = 2147483647", "codex --strict-config doctor --summary --ascii", "loaded", "不要删除或重排现有配置"],
+    "must_not_include": ["删除现有配置后重写"]
+  },
+  {
+    "name": "compact-readme",
+    "request": "Use goal-creator to create a compact goal for a small README typo fix.",
+    "mode": "compact",
+    "language": "en",
+    "must_include": ["/goal", "Verify", "Boundaries", "Stop", "Pause"],
+    "must_not_include": ["Slice Table", "Subagent Deliverables"]
+  },
+  {
+    "name": "high-risk-production",
+    "request": "用 goal-creator 为“清理生产数据库里的重复用户”创建目标。",
+    "mode": "full-spec",
+    "language": "zh",
+    "must_include": ["生产数据", "暂停", "备份", "人工确认"],
+    "must_not_include": ["直接删除", "无需确认"]
+  },
+  {
+    "name": "review-existing-goal",
+    "request": "用 goal-creator 检查这份已有 goal 是否缺少验证、边界或暂停条件。",
+    "mode": "review",
+    "language": "zh",
+    "must_include": ["缺失项", "降级风险", "验证", "边界", "暂停"],
+    "must_not_include": ["自动执行目标"]
+  }
+]
