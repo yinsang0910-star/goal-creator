@@ -17,6 +17,7 @@ Turn a user's task into a short manual launcher plus a complete goal spec saved 
 - Default mode: `full-spec`.
 - Default formats: `codex` and `markdown`.
 - If the user asks for all/mainstream formats, include: `codex`, `claude`, `gemini`, `cursor`, `github`, `markdown`.
+- If the user asks for multi-agent, subagent, parallel, multi-module, 协同, 子代理, 并行, or 多模块 execution, add the multi-agent collaboration contract.
 - Keep the chat command under 140 characters when possible. Put all detail in the saved goal file.
 - Creation is manual by default: output and save the goal, but do not start the work described by the goal.
 - Ask at most one question only when the missing answer changes risk, ownership, cost, or write location.
@@ -147,6 +148,11 @@ Chinese label map:
 - `Verification` -> `验证`
 - `Safety / Constraints` -> `安全 / 约束`
 - `Iteration Policy` -> `迭代策略`
+- `Multi-Agent Collaboration` -> `多代理协同`
+- `Slice Table` -> `切片表`
+- `Subagent Deliverables` -> `子代理交付物`
+- `Merge Policy` -> `合并策略`
+- `Rejection Conditions` -> `拒绝条件`
 - `Stop` -> `停止`
 - `Pause` -> `暂停`
 
@@ -166,6 +172,59 @@ Quality bar before saving:
 - Pause names the first human or external blocker that should stop the agent.
 - Do not silently reduce scope. If constraints require a smaller first step, keep the full request in `Original Request`, put the reduction in `Pause` or assumptions needing confirmation, and do not present the reduced scope as the final goal.
 - When used with planning, TDD, verification, or superpowers workflows, the saved goal is the higher-level contract: later skills may decompose execution, but must not weaken `Objective`, `Non-Negotiables`, `Success Criteria`, or `Verification`.
+
+### Multi-agent collaboration extension
+
+Use this only when the user asks for multi-agent, subagent, parallel, multi-module, 协同, 子代理, 并行, or 多模块 execution, or when the requested work clearly spans independent modules.
+
+Do not force multi-agent execution for a small, single-surface task. If the work cannot be split into at least two substantial low-conflict slices, say so in `Pause` instead of inventing fake parallel work.
+
+Add these sections to the saved full-spec goal:
+
+```markdown
+## Multi-Agent Collaboration
+
+- Main session freezes the original goal, success criteria, non-negotiables, shared interfaces, and file boundaries before dispatch.
+- Main session delegates at least two substantial low-conflict slices when the task is actually parallelizable.
+- Main session owns scheduling, shared files, conflict handling, merge decisions, and final project-level verification.
+- Subagents may decompose implementation but must not weaken the saved goal contract.
+
+## Slice Table
+
+| Slice | Owner | Allowed Files | Forbidden Files | Expected Output | Verification | Merge Risk |
+| --- | --- | --- | --- | --- | --- | --- |
+| ... | subagent | ... | ... | ... | ... | ... |
+
+## Subagent Deliverables
+
+Each subagent must return:
+- Slice name
+- Changed files
+- Key implementation notes
+- Verification commands
+- Verification results
+- Known risks
+- Handoff notes
+- Any boundary crossing needed
+
+## Merge Policy
+
+- Dispatch independent slices first.
+- Merge subagent results serially.
+- Shared files are edited by the main session unless the slice explicitly allows them.
+- Do not bypass completed subagent work and reimplement it silently; adopt it, adapt it with explanation, or reject it with cause.
+- On conflict, narrow boundaries or move the shared-file work back to the main session.
+
+## Rejection Conditions
+
+Reject or return a subagent result if it:
+- Changes files outside its allowed range
+- Omits verification results
+- Reports failed verification without a risk explanation
+- Weakens the original goal, success criteria, or non-negotiables
+- Conflicts with frozen interfaces or design direction
+- Cannot be understood or merged from the handoff
+```
 
 ### compact
 

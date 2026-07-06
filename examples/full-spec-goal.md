@@ -78,6 +78,14 @@ Forbidden:
 - Rerun the smoke test after script or example edits.
 - If a check fails, inspect the exact output before retrying.
 
+## Multi-Agent Collaboration
+
+- Use only if a future goal explicitly asks for multi-agent, parallel, subagent, or multi-module execution.
+- Require a slice table with owner, allowed files, expected output, verification, and merge risk before dispatch.
+- Require every subagent to return changed files, verification commands and results, risks, and handoff notes.
+- Main session must consume each subagent result, merge serially, run project-level verification, and report each contribution.
+- Reject subagent work that crosses file boundaries, skips verification, weakens the goal, or cannot be merged from the handoff.
+
 ## Stop
 
 - The new default behavior is documented, tested, installed locally, pushed to GitHub, and tagged.

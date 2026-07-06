@@ -130,6 +130,12 @@ def main() -> int:
         assert "must not weaken user-provided acceptance criteria" in skill_text
         assert "Do not silently reduce scope" in skill_text
         assert "saved goal is the higher-level contract" in skill_text
+        assert "Multi-agent collaboration extension" in skill_text
+        assert "Slice Table" in skill_text
+        assert "Subagent Deliverables" in skill_text
+        assert "Do not force multi-agent execution" in skill_text
+        assert "Do not bypass completed subagent work" in skill_text
+        assert "Reject or return a subagent result" in skill_text
 
     print("smoke ok")
     return 0
