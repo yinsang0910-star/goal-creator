@@ -100,6 +100,28 @@ Use goal-creator to create and save a full-spec goal for a small README update.
 
 You should see a new file under `.goals/`.
 
+### How To Use
+
+Create a normal full-spec goal:
+
+```text
+Use goal-creator to create and save a full-spec goal for <your task>.
+```
+
+Create a goal that also prepares Codex subagent capacity:
+
+```text
+Use goal-creator to create and save a goal for configuring Codex subagent concurrency.
+```
+
+Run a saved goal later:
+
+```text
+/goal Read `.goals/<file>.md`; execute only that file.
+```
+
+Full-spec goals include multi-agent coordination by default. The executing main session must try substantial low-conflict slices first, consume each subagent handoff, merge serially, and run final project-level verification.
+
 ### Example Output
 
 ```text
@@ -179,6 +201,28 @@ Copy-Item -Recurse .\goal-creator $env:USERPROFILE\.agents\skills\goal-creator
 ```
 
 你应该能在 `.goals/` 目录下看到新文件。
+
+### 怎么使用
+
+创建普通 full-spec 目标：
+
+```text
+用 goal-creator 为“<你的任务>”创建并保存一个 full-spec 目标。
+```
+
+创建 Codex 子代理并发配置目标：
+
+```text
+用 goal-creator 创建并保存一个配置 Codex 子代理并发上限的目标。
+```
+
+之后执行已保存的目标：
+
+```text
+/goal 读取 `.goals/<file>.md`；只执行该文件。
+```
+
+full-spec 目标默认包含多代理协同规则。未来执行的主会话必须先尝试拆分实质性、低冲突切片，消费每个子代理交接结果，串行合并，并运行最终项目级验证。
 
 ### 输出长什么样
 
