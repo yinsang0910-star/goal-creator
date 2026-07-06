@@ -17,7 +17,8 @@ Turn a user's task into a short manual launcher plus a complete goal spec saved 
 - Default mode: `full-spec`.
 - Default formats: `codex` and `markdown`.
 - If the user asks for all/mainstream formats, include: `codex`, `claude`, `gemini`, `cursor`, `github`, `markdown`.
-- If the user asks for multi-agent, subagent, parallel, multi-module, 协同, 子代理, 并行, or 多模块 execution, add the multi-agent collaboration contract.
+- Full-spec goals default to multi-agent-first execution: include the multi-agent collaboration contract and require the future main session to attempt parallel slice dispatch before implementation.
+- If the user asks to configure Codex subagent concurrency or capacity, include the Codex subagent capacity setup contract.
 - Keep the chat command under 140 characters when possible. Put all detail in the saved goal file.
 - Creation is manual by default: output and save the goal, but do not start the work described by the goal.
 - Ask at most one question only when the missing answer changes risk, ownership, cost, or write location.
@@ -125,6 +126,45 @@ Forbidden:
 
 - ...
 
+## Multi-Agent Collaboration
+
+- Main session freezes the original goal, success criteria, non-negotiables, shared interfaces, and file boundaries before dispatch.
+- Main session attempts to delegate at least two substantial low-conflict slices before implementation.
+- Main session owns scheduling, shared files, conflict handling, merge decisions, and final project-level verification.
+- Subagents may decompose implementation but must not weaken the saved goal contract.
+
+## Slice Table
+
+| Slice | Owner | Allowed Files | Forbidden Files | Expected Output | Verification | Merge Risk |
+| --- | --- | --- | --- | --- | --- | --- |
+| ... | subagent | ... | ... | ... | ... | ... |
+
+## Subagent Deliverables
+
+- Slice name
+- Changed files
+- Key implementation notes
+- Verification commands
+- Verification results
+- Known risks
+- Handoff notes
+- Any boundary crossing needed
+
+## Merge Policy
+
+- Dispatch independent slices first.
+- Merge subagent results serially.
+- Keep shared files under main-session ownership unless a slice explicitly allows them.
+- Adopt, adapt with explanation, or reject each subagent result; do not bypass completed subagent work silently.
+
+## Rejection Conditions
+
+- Changes files outside the allowed range.
+- Omits verification results.
+- Weakens the original goal, success criteria, or non-negotiables.
+- Conflicts with frozen interfaces or design direction.
+- Cannot be understood or merged from the handoff.
+
 ## Stop
 
 - ...
@@ -153,6 +193,18 @@ Chinese label map:
 - `Subagent Deliverables` -> `子代理交付物`
 - `Merge Policy` -> `合并策略`
 - `Rejection Conditions` -> `拒绝条件`
+- `Codex Subagent Capacity Setup` -> `Codex 子代理并发配置`
+- `Slice` -> `切片`
+- `Owner` -> `负责人`
+- `Allowed Files` -> `允许文件`
+- `Forbidden Files` -> `禁止文件`
+- `Expected Output` -> `预期输出`
+- `Merge Risk` -> `合并风险`
+- `Changed files` -> `改动文件`
+- `Verification commands` -> `验证命令`
+- `Verification results` -> `验证结果`
+- `Known risks` -> `已知风险`
+- `Handoff notes` -> `交接说明`
 - `Stop` -> `停止`
 - `Pause` -> `暂停`
 
@@ -172,14 +224,17 @@ Quality bar before saving:
 - Pause names the first human or external blocker that should stop the agent.
 - Do not silently reduce scope. If constraints require a smaller first step, keep the full request in `Original Request`, put the reduction in `Pause` or assumptions needing confirmation, and do not present the reduced scope as the final goal.
 - When used with planning, TDD, verification, or superpowers workflows, the saved goal is the higher-level contract: later skills may decompose execution, but must not weaken `Objective`, `Non-Negotiables`, `Success Criteria`, or `Verification`.
+- Full-spec goals include `Multi-Agent Collaboration`, `Slice Table`, `Subagent Deliverables`, `Merge Policy`, and `Rejection Conditions` by default.
+- The multi-agent contract requires at least two substantial low-conflict slices when possible, and puts unsplittable work in `Pause` instead of inventing fake parallelism.
+- Subagents must not be used only for simple reading, summarizing, searching, formatting, or one tiny function.
 
-### Multi-agent collaboration extension
+### Multi-agent collaboration default
 
-Use this only when the user asks for multi-agent, subagent, parallel, multi-module, 协同, 子代理, 并行, or 多模块 execution, or when the requested work clearly spans independent modules.
+Use this by default for `full-spec` goals.
 
-Do not force multi-agent execution for a small, single-surface task. If the work cannot be split into at least two substantial low-conflict slices, say so in `Pause` instead of inventing fake parallel work.
+The future executing main session must first try to split work into at least two substantial low-conflict slices before implementation. If the work cannot be split, say so in `Pause` instead of inventing fake parallel work.
 
-Add these sections to the saved full-spec goal:
+Include these sections in the saved full-spec goal:
 
 ```markdown
 ## Multi-Agent Collaboration
@@ -225,6 +280,30 @@ Reject or return a subagent result if it:
 - Conflicts with frozen interfaces or design direction
 - Cannot be understood or merged from the handoff
 ```
+
+### Codex subagent capacity setup
+
+Use this when the user asks to configure Codex subagents, raise subagent limits, tune concurrency, or prepare the environment for high-parallel multi-agent execution. Do not add this global-config step to ordinary implementation goals unless requested.
+
+The saved goal must require:
+
+1. Modify the current user's Codex global config file: `~/.codex/config.toml`.
+2. If `[agents]` exists, update only these fields inside it; if not, append:
+
+```toml
+[agents]
+max_threads = 2147483647
+max_depth = 2147483647
+```
+
+3. Do not delete or reorder existing config.
+4. Run:
+
+```bash
+codex --strict-config doctor --summary --ascii
+```
+
+5. Verify the output shows `Configuration` / `config` is `loaded`.
 
 ### compact
 

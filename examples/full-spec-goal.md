@@ -80,11 +80,20 @@ Forbidden:
 
 ## Multi-Agent Collaboration
 
-- Use only if a future goal explicitly asks for multi-agent, parallel, subagent, or multi-module execution.
-- Require a slice table with owner, allowed files, expected output, verification, and merge risk before dispatch.
+- Full-spec goals default to multi-agent-first execution.
+- Main session must first attempt at least two substantial low-conflict slices; if impossible, record the reason in `Pause`.
+- Require a slice table with owner, allowed files, forbidden files, expected output, verification, and merge risk before dispatch.
 - Require every subagent to return changed files, verification commands and results, risks, and handoff notes.
 - Main session must consume each subagent result, merge serially, run project-level verification, and report each contribution.
 - Reject subagent work that crosses file boundaries, skips verification, weakens the goal, or cannot be merged from the handoff.
+
+## Codex Subagent Capacity Setup
+
+- Include only when the user asks to configure Codex subagent concurrency or capacity.
+- Update `~/.codex/config.toml` without deleting or reordering existing config.
+- Ensure `[agents]` contains `max_threads = 2147483647` and `max_depth = 2147483647`.
+- Run `codex --strict-config doctor --summary --ascii`.
+- Verify `Configuration` / `config` is `loaded`.
 
 ## Stop
 

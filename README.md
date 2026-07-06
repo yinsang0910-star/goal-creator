@@ -49,7 +49,8 @@ A short launcher plus a complete Codex / Claude / Gemini / Cursor / GitHub-ready
 It avoids giant chat prompts. The chat command stays short; the saved `.goals/*.md` file keeps the full plan.
 It also preserves the original request so later execution cannot quietly weaken the acceptance bar.
 For non-English goals, headings, labels, launcher wording, and prose stay in the target language.
-For multi-agent work, it can add a collaboration contract with slice ownership, subagent deliverables, merge policy, and rejection conditions.
+Full-spec goals include a multi-agent-first collaboration contract with slice ownership, subagent deliverables, merge policy, and rejection conditions.
+It can also create a Codex subagent capacity setup goal for `~/.codex/config.toml` when requested.
 Creating a goal does not execute it. Paste or invoke the returned launcher only when you want the agent to start.
 
 ### What It Does
@@ -58,7 +59,8 @@ Creating a goal does not execute it. Paste or invoke the returned launcher only 
 - Saves full execution specs for detailed work.
 - Saves goals into the current project under `.goals/`.
 - Follows the user's language for headings and prose.
-- Adds multi-agent coordination rules when the task asks for parallel or subagent execution.
+- Adds multi-agent coordination rules to full-spec goals by default.
+- Adds Codex subagent capacity setup instructions when requested.
 - Renders mainstream agent formats:
   - Codex `/goal`
   - Claude Code
@@ -127,7 +129,8 @@ The saved file contains the original request, non-negotiables, full objective, s
 它不把又长又厚的提示词合同塞进聊天框。聊天里的 `/goal` 保持短，完整流程放进 `.goals/*.md`。
 它会保留原始需求，避免后续执行时悄悄降低验收标准。
 非英文目标会保持同一种目标语言，包括标题、字段标签、启动命令和正文。
-多代理任务会加入协同契约，明确切片归属、子代理交付物、合并策略和拒绝条件。
+full-spec 目标默认加入多代理优先协同契约，明确切片归属、子代理交付物、合并策略和拒绝条件。
+用户需要时，也可以生成调整 `~/.codex/config.toml` 的 Codex 子代理并发配置目标。
 创建目标不会自动执行目标。只有当你粘贴或调用返回的启动命令时，Agent 才开始执行。
 
 ### 它能做什么
@@ -136,7 +139,8 @@ The saved file contains the original request, non-negotiables, full objective, s
 - 把完整执行流程保存成目标文件。
 - 自动保存到当前项目的 `.goals/` 目录。
 - 标题和正文都跟随用户语言输出。
-- 在任务要求并行或子代理执行时加入多代理协同规则。
+- full-spec 目标默认加入多代理协同规则。
+- 按需加入 Codex 子代理并发上限配置步骤。
 - 支持主流 Agent 格式：
   - Codex `/goal`
   - Claude Code

@@ -125,17 +125,25 @@ def main() -> int:
         assert "do not keep English headings" in skill_text
         assert "Chinese label map" in skill_text
         assert "`Allowed` -> `允许`" in skill_text
+        assert "`Codex Subagent Capacity Setup` -> `Codex 子代理并发配置`" in skill_text
+        assert "`Expected Output` -> `预期输出`" in skill_text
         assert "render visible field labels in the target language" in skill_text
         assert "Original Request preserves" in skill_text
         assert "must not weaken user-provided acceptance criteria" in skill_text
         assert "Do not silently reduce scope" in skill_text
         assert "saved goal is the higher-level contract" in skill_text
-        assert "Multi-agent collaboration extension" in skill_text
+        assert "Full-spec goals default to multi-agent-first execution" in skill_text
+        assert "Multi-agent collaboration default" in skill_text
         assert "Slice Table" in skill_text
         assert "Subagent Deliverables" in skill_text
-        assert "Do not force multi-agent execution" in skill_text
+        assert "Subagents must not be used only for simple reading" in skill_text
+        assert "inventing fake parallel work" in skill_text
         assert "Do not bypass completed subagent work" in skill_text
         assert "Reject or return a subagent result" in skill_text
+        assert "Codex subagent capacity setup" in skill_text
+        assert "~/.codex/config.toml" in skill_text
+        assert "max_threads = 2147483647" in skill_text
+        assert "codex --strict-config doctor --summary --ascii" in skill_text
 
     print("smoke ok")
     return 0
