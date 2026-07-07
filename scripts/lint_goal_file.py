@@ -16,6 +16,38 @@ PLACEHOLDERS = [
     r"待定",
 ]
 
+EVIDENCE_WORDS = [
+    "run",
+    "test",
+    "build",
+    "lint",
+    "typecheck",
+    "screenshot",
+    "log",
+    "artifact",
+    "file",
+    "运行",
+    "测试",
+    "构建",
+    "检查",
+    "截图",
+    "日志",
+    "产物",
+    "文件",
+    "证据",
+    "frontmatter",
+]
+
+VAGUE_DONE = [
+    "when done",
+    "looks good",
+    "seems good",
+    "看起来可以",
+    "感觉可以",
+    "完成即可",
+    "差不多",
+]
+
 EN_REQUIRED = [
     "Short Command",
     "Objective",
@@ -100,6 +132,25 @@ def headings(body: str) -> set[str]:
     return {match.group(1).strip() for match in re.finditer(r"^##\s+(.+)$", body, re.MULTILINE)}
 
 
+def section_body(body: str, names: list[str]) -> str:
+    escaped = "|".join(re.escape(name) for name in names)
+    match = re.search(rf"^##\s+({escaped})\s*$([\s\S]*?)(?=^##\s+|\Z)", body, flags=re.MULTILINE)
+    return match.group(2).strip() if match else ""
+
+
+def table_rows(section: str) -> list[str]:
+    rows = []
+    for line in section.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            continue
+        cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+        if all(re.fullmatch(r"-+", cell) for cell in cells):
+            continue
+        rows.append(stripped)
+    return rows[1:]
+
+
 def is_zh(frontmatter: dict[str, str], body: str) -> bool:
     language = frontmatter.get("language", "").lower()
     if language.startswith("zh") or "chinese" in language:
@@ -111,6 +162,10 @@ def is_zh(frontmatter: dict[str, str], body: str) -> bool:
 
 def has_config_setup(sections: set[str]) -> bool:
     return "Codex Subagent Capacity Setup" in sections or "Codex 子代理并发配置" in sections
+
+
+def has_no_reorder_rule(body: str) -> bool:
+    return "不要删除或重排现有配置" in body or "without deleting or reordering existing config" in body.lower()
 
 
 def lint_text(text: str, source: str) -> list[str]:
@@ -130,6 +185,9 @@ def lint_text(text: str, source: str) -> list[str]:
         for section in multi_agent:
             if section not in sections:
                 errors.append(f"{source}: missing full-spec multi-agent section `{section}`")
+        rows = table_rows(section_body(body, ["切片表", "Slice Table"]))
+        if len(rows) < 2:
+            errors.append(f"{source}: Slice Table needs at least 2 data rows")
 
     goal_lines = [line.strip() for line in body.splitlines() if line.strip().startswith("/goal")]
     if not goal_lines:
@@ -145,6 +203,15 @@ def lint_text(text: str, source: str) -> list[str]:
     for pattern in PLACEHOLDERS:
         if re.search(pattern, body, flags=re.IGNORECASE):
             errors.append(f"{source}: unresolved placeholder matched `{pattern}`")
+
+    verification = section_body(body, ["验证", "Verification"])
+    if verification and not any(word.lower() in verification.lower() for word in EVIDENCE_WORDS):
+        errors.append(f"{source}: verification should name concrete evidence")
+
+    stop_pause = "\n".join([section_body(body, ["停止", "Stop"]), section_body(body, ["暂停", "Pause"])])
+    for phrase in VAGUE_DONE:
+        if phrase.lower() in stop_pause.lower():
+            errors.append(f"{source}: vague completion language `{phrase}`")
 
     if zh:
         for label in EN_LABELS_IN_ZH:
@@ -163,6 +230,8 @@ def lint_text(text: str, source: str) -> list[str]:
         ]:
             if required_text not in body:
                 errors.append(f"{source}: Codex capacity setup missing `{required_text}`")
+        if not has_no_reorder_rule(body):
+            errors.append(f"{source}: Codex capacity setup missing no-delete/no-reorder rule")
 
     return errors
 

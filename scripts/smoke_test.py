@@ -13,8 +13,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "save_goal.py"
 LINT = ROOT / "scripts" / "lint_goal_file.py"
+INSTALL = ROOT / "scripts" / "install_local.py"
+CHECK_EVALS = ROOT / "scripts" / "check_eval_cases.py"
 SKILL = ROOT / "SKILL.md"
 EVALS = ROOT / "examples" / "evals" / "cases.json"
+OPENAI_YAML = ROOT / "agents" / "openai.yaml"
 FRONTMATTER_KEYS = {"name", "description"}
 BODY = """# 冒烟目标
 
@@ -125,6 +128,15 @@ def run_lint(path: Path, *, check: bool = True) -> subprocess.CompletedProcess[s
     )
 
 
+def run_script(path: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, str(path), *args],
+        text=True,
+        capture_output=True,
+        check=check,
+    )
+
+
 def check_skill_frontmatter() -> None:
     text = SKILL.read_text(encoding="utf-8")
     _, frontmatter, _ = text.split("---", 2)
@@ -147,6 +159,10 @@ def check_eval_cases() -> None:
 def main() -> int:
     check_skill_frontmatter()
     check_eval_cases()
+    assert OPENAI_YAML.exists()
+    assert "Goal Creator" in OPENAI_YAML.read_text(encoding="utf-8")
+    assert "Usage: install_local.py" in run_script(INSTALL, "--help").stdout
+    assert "eval cases ok" in run_script(CHECK_EVALS).stdout
 
     with tempfile.TemporaryDirectory() as raw:
         tmp = Path(raw)
@@ -187,6 +203,18 @@ def main() -> int:
         assert failed.returncode == 1
         assert "missing section" in failed.stderr
 
+        one_slice = tmp / "one-slice.md"
+        one_slice.write_text(text.replace("| 质量检查 | 子代理 | scripts/smoke_test.py | 无关文件 | 检查保存结果 | 运行 smoke test | 低 |\n", ""), encoding="utf-8")
+        failed = run_lint(one_slice, check=False)
+        assert failed.returncode == 1
+        assert "Slice Table needs at least 2 data rows" in failed.stderr
+
+        vague = tmp / "vague.md"
+        vague.write_text(text.replace("- 检查通过。", "- 看起来可以。"), encoding="utf-8")
+        failed = run_lint(vague, check=False)
+        assert failed.returncode == 1
+        assert "vague completion language" in failed.stderr
+
         skill_text = SKILL.read_text(encoding="utf-8")
         assert "Quality bar before saving" in skill_text
         assert "under 140 characters" in skill_text
@@ -214,6 +242,8 @@ def main() -> int:
         assert "max_threads = 2147483647" in skill_text
         assert "codex --strict-config doctor --summary --ascii" in skill_text
         assert "lint_goal_file.py" in skill_text
+        assert "install_local.py" in skill_text
+        assert "check_eval_cases.py" in skill_text
 
     print("smoke ok")
     return 0

@@ -477,6 +477,14 @@ After saving a full-spec goal, validate it with `scripts/lint_goal_file.py` when
 python scripts/lint_goal_file.py .goals/<file>.md
 ```
 
+Use `scripts/check_eval_cases.py` after editing `examples/evals/cases.json`.
+
+Use `scripts/install_local.py` to install or update this skill in the current user's Codex skills directory:
+
+```bash
+python scripts/install_local.py
+```
+
 ## Response
 
 After saving, return only:
