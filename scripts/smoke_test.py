@@ -67,18 +67,36 @@ BODY = """# 冒烟目标
 ## 多代理协同
 
 - 主会话先冻结原始目标、成功标准、不可降级项、共享接口和文件边界。
-- 主会话先尝试拆分至少两个实质性低冲突切片；无法拆分时写入暂停条件。
+- 主会话默认先拆分至少两个实质性、低冲突、可并行的垂直切片并派发给子代理；无法拆分时写入暂停条件。
 
-## 切片表
+## 派发表
 
-| 切片 | 负责人 | 允许文件 | 禁止文件 | 预期输出 | 验证 | 合并风险 |
-| --- | --- | --- | --- | --- | --- | --- |
-| 保存脚本 | 子代理 | scripts/save_goal.py | 无关文件 | 保存目标文件 | 运行 smoke test | 低 |
-| 质量检查 | 子代理 | scripts/smoke_test.py | 无关文件 | 检查保存结果 | 运行 smoke test | 低 |
+| 切片 | 代理角色 | 目标 | 允许文件 | 禁止文件 | 输入 | 必交输出 | 验证 | 依赖 | 合并负责人 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| implementation | 子代理 | 更新保存脚本行为 | scripts/save_goal.py | README.md, SKILL.md | 现有 CLI 和保存格式 | 改动文件、验证命令、结果、风险、交接说明 | 运行 smoke test | 无 | 主会话 |
+| verification | 子代理 | 扩展质量检查覆盖 | scripts/smoke_test.py, scripts/lint_goal_file.py | README.md, SKILL.md | 新协议验收标准 | 改动文件、验证命令、结果、风险、交接说明 | 运行 smoke test 和 goal file lint | implementation | 主会话 |
 
-## 子代理交付物
+## 共享文件归属
 
-- 切片名、改动文件、实现说明、验证命令、验证结果、风险、交接说明、是否越界。
+Main-session-owned:
+- README.md
+- SKILL.md
+
+Subagent-owned:
+- scripts/save_goal.py
+- scripts/smoke_test.py
+- scripts/lint_goal_file.py
+
+## 子代理结果
+
+切片:
+状态: adopted | needs-main-merge | blocked | rejected
+改动文件:
+验证命令:
+验证结果:
+越界情况:
+风险:
+交接说明:
 
 ## 合并策略
 
@@ -187,8 +205,10 @@ def main() -> int:
         assert "Allowed:" not in text
         assert "Forbidden:" not in text
         assert "## 多代理协同" in text
-        assert "## 切片表" in text
-        assert "## 子代理交付物" in text
+        assert "## 派发表" in text
+        assert "## 共享文件归属" in text
+        assert "## 子代理结果" in text
+        assert "| 切片 | 代理角色 | 目标 | 允许文件 | 禁止文件 | 输入 | 必交输出 | 验证 | 依赖 | 合并负责人 |" in text
 
         good = run_lint(first)
         assert "goal file lint ok" in good.stdout
@@ -204,10 +224,28 @@ def main() -> int:
         assert "missing section" in failed.stderr
 
         one_slice = tmp / "one-slice.md"
-        one_slice.write_text(text.replace("| 质量检查 | 子代理 | scripts/smoke_test.py | 无关文件 | 检查保存结果 | 运行 smoke test | 低 |\n", ""), encoding="utf-8")
+        one_slice.write_text(text.replace("| verification | 子代理 | 扩展质量检查覆盖 | scripts/smoke_test.py, scripts/lint_goal_file.py | README.md, SKILL.md | 新协议验收标准 | 改动文件、验证命令、结果、风险、交接说明 | 运行 smoke test 和 goal file lint | implementation | 主会话 |\n", ""), encoding="utf-8")
         failed = run_lint(one_slice, check=False)
         assert failed.returncode == 1
-        assert "Slice Table needs at least 2 data rows" in failed.stderr
+        assert "Dispatch Matrix needs at least 2 data rows" in failed.stderr
+
+        missing_owner = tmp / "missing-owner.md"
+        missing_owner.write_text(text.replace("Subagent-owned:", "Subagent owned:"), encoding="utf-8")
+        failed = run_lint(missing_owner, check=False)
+        assert failed.returncode == 1
+        assert "Shared File Ownership missing `Subagent-owned:`" in failed.stderr
+
+        missing_matrix_header = tmp / "missing-matrix-header.md"
+        missing_matrix_header.write_text(text.replace("合并负责人 |", "|"), encoding="utf-8")
+        failed = run_lint(missing_matrix_header, check=False)
+        assert failed.returncode == 1
+        assert "Dispatch Matrix missing required column" in failed.stderr
+
+        fake_slice = tmp / "fake-slice.md"
+        fake_slice.write_text(text.replace("更新保存脚本行为", "只阅读并总结保存脚本"), encoding="utf-8")
+        failed = run_lint(fake_slice, check=False)
+        assert failed.returncode == 1
+        assert "Dispatch Matrix contains read-only or summary-only slice" in failed.stderr
 
         vague = tmp / "vague.md"
         vague.write_text(text.replace("- 检查通过。", "- 看起来可以。"), encoding="utf-8")
@@ -223,16 +261,20 @@ def main() -> int:
         assert "Chinese label map" in skill_text
         assert "`Allowed` -> `允许`" in skill_text
         assert "`Codex Subagent Capacity Setup` -> `Codex 子代理并发配置`" in skill_text
-        assert "`Expected Output` -> `预期输出`" in skill_text
+        assert "`Required Output` -> `必交输出`" in skill_text
         assert "render visible field labels in the target language" in skill_text
         assert "Original Request preserves" in skill_text
         assert "must not weaken user-provided acceptance criteria" in skill_text
         assert "Do not silently reduce scope" in skill_text
         assert "saved goal is the higher-level contract" in skill_text
-        assert "Full-spec goals default to multi-agent-first execution" in skill_text
-        assert "Multi-agent collaboration default" in skill_text
-        assert "Slice Table" in skill_text
-        assert "Subagent Deliverables" in skill_text
+        assert "Full-spec goals default to forced subagent dispatch" in skill_text
+        assert "Dispatch protocol default" in skill_text
+        assert "Dispatch Matrix" in skill_text
+        assert "Shared File Ownership" in skill_text
+        assert "Subagent Result" in skill_text
+        assert "`Dispatch Matrix` -> `派发表`" in skill_text
+        assert "`Shared File Ownership` -> `共享文件归属`" in skill_text
+        assert "`Subagent Result` -> `子代理结果`" in skill_text
         assert "Subagents must not be used only for simple reading" in skill_text
         assert "inventing fake parallel work" in skill_text
         assert "Do not bypass completed subagent work" in skill_text

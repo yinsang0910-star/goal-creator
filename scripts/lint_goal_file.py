@@ -78,18 +78,86 @@ ZH_REQUIRED = [
 
 MULTI_AGENT_EN = [
     "Multi-Agent Collaboration",
-    "Slice Table",
-    "Subagent Deliverables",
+    "Dispatch Matrix",
+    "Shared File Ownership",
+    "Subagent Result",
     "Merge Policy",
     "Rejection Conditions",
 ]
 
 MULTI_AGENT_ZH = [
     "多代理协同",
-    "切片表",
-    "子代理交付物",
+    "派发表",
+    "共享文件归属",
+    "子代理结果",
     "合并策略",
     "拒绝条件",
+]
+
+DISPATCH_HEADERS_EN = [
+    "Slice",
+    "Agent Role",
+    "Goal",
+    "Allowed Files",
+    "Forbidden Files",
+    "Inputs",
+    "Required Output",
+    "Verify",
+    "Depends On",
+    "Merge Owner",
+]
+
+DISPATCH_HEADERS_ZH = [
+    "切片",
+    "代理角色",
+    "目标",
+    "允许文件",
+    "禁止文件",
+    "输入",
+    "必交输出",
+    "验证",
+    "依赖",
+    "合并负责人",
+]
+
+DISPATCH_REQUIRED_CELLS_EN = ["Allowed Files", "Verify", "Merge Owner"]
+DISPATCH_REQUIRED_CELLS_ZH = ["允许文件", "验证", "合并负责人"]
+DISPATCH_FAKE_SLICE_FIELDS_EN = ["Agent Role", "Goal", "Required Output"]
+DISPATCH_FAKE_SLICE_FIELDS_ZH = ["代理角色", "目标", "必交输出"]
+
+SHARED_OWNER_MARKERS = ["Main-session-owned:", "Subagent-owned:"]
+
+SUBAGENT_RESULT_FIELDS_EN = [
+    "Slice:",
+    "Status:",
+    "Changed Files:",
+    "Verification Run:",
+    "Verification Result:",
+    "Boundary Crossings:",
+    "Risks:",
+    "Handoff:",
+]
+
+SUBAGENT_RESULT_FIELDS_ZH = [
+    "切片:",
+    "状态:",
+    "改动文件:",
+    "验证命令:",
+    "验证结果:",
+    "越界情况:",
+    "风险:",
+    "交接说明:",
+]
+
+FAKE_SLICE_TERMS = [
+    "read only",
+    "summary only",
+    "inspect only",
+    "只读",
+    "总结",
+    "搜索",
+    "只检查",
+    "只阅读",
 ]
 
 EN_LABELS_IN_ZH = [
@@ -105,6 +173,9 @@ EN_LABELS_IN_ZH = [
     "Multi-Agent Collaboration",
     "Slice Table",
     "Subagent Deliverables",
+    "Dispatch Matrix",
+    "Shared File Ownership",
+    "Subagent Result",
     "Merge Policy",
     "Rejection Conditions",
     "Stop",
@@ -138,17 +209,17 @@ def section_body(body: str, names: list[str]) -> str:
     return match.group(2).strip() if match else ""
 
 
-def table_rows(section: str) -> list[str]:
+def table_cells(section: str) -> list[list[str]]:
     rows = []
     for line in section.splitlines():
         stripped = line.strip()
         if not stripped.startswith("|"):
             continue
         cells = [cell.strip() for cell in stripped.strip("|").split("|")]
-        if all(re.fullmatch(r"-+", cell) for cell in cells):
+        if all(re.fullmatch(r":?-+:?", cell) for cell in cells):
             continue
-        rows.append(stripped)
-    return rows[1:]
+        rows.append(cells)
+    return rows
 
 
 def is_zh(frontmatter: dict[str, str], body: str) -> bool:
@@ -168,6 +239,60 @@ def has_no_reorder_rule(body: str) -> bool:
     return "不要删除或重排现有配置" in body or "without deleting or reordering existing config" in body.lower()
 
 
+def lint_dispatch_matrix(body: str, source: str, zh: bool) -> list[str]:
+    errors: list[str] = []
+    section = section_body(body, ["派发表", "Dispatch Matrix"])
+    rows = table_cells(section)
+    if not rows:
+        errors.append(f"{source}: Dispatch Matrix needs a markdown table")
+        return errors
+
+    headers = rows[0]
+    data_rows = rows[1:]
+    expected_headers = DISPATCH_HEADERS_ZH if zh else DISPATCH_HEADERS_EN
+    for header in expected_headers:
+        if header not in headers:
+            errors.append(f"{source}: Dispatch Matrix missing required column `{header}`")
+
+    if len(data_rows) < 2:
+        errors.append(f"{source}: Dispatch Matrix needs at least 2 data rows")
+
+    required_cells = DISPATCH_REQUIRED_CELLS_ZH if zh else DISPATCH_REQUIRED_CELLS_EN
+    fake_slice_fields = DISPATCH_FAKE_SLICE_FIELDS_ZH if zh else DISPATCH_FAKE_SLICE_FIELDS_EN
+    for row in data_rows:
+        if len(row) != len(headers):
+            errors.append(f"{source}: Dispatch Matrix row has {len(row)} cells but header has {len(headers)}")
+            continue
+        mapped = dict(zip(headers, row))
+        for header in required_cells:
+            if header in mapped and not mapped[header].strip():
+                errors.append(f"{source}: Dispatch Matrix row missing `{header}`")
+        fake_text = " ".join(mapped.get(header, "") for header in fake_slice_fields).lower()
+        if any(term.lower() in fake_text for term in FAKE_SLICE_TERMS):
+            errors.append(f"{source}: Dispatch Matrix contains read-only or summary-only slice")
+
+    return errors
+
+
+def lint_shared_ownership(body: str, source: str) -> list[str]:
+    errors: list[str] = []
+    section = section_body(body, ["共享文件归属", "Shared File Ownership"])
+    for marker in SHARED_OWNER_MARKERS:
+        if marker not in section:
+            errors.append(f"{source}: Shared File Ownership missing `{marker}`")
+    return errors
+
+
+def lint_subagent_result(body: str, source: str, zh: bool) -> list[str]:
+    errors: list[str] = []
+    section = section_body(body, ["子代理结果", "Subagent Result"])
+    fields = SUBAGENT_RESULT_FIELDS_ZH if zh else SUBAGENT_RESULT_FIELDS_EN
+    for field in fields:
+        if field not in section:
+            errors.append(f"{source}: Subagent Result missing `{field}`")
+    return errors
+
+
 def lint_text(text: str, source: str) -> list[str]:
     errors: list[str] = []
     frontmatter, body = parse_frontmatter(text)
@@ -185,9 +310,9 @@ def lint_text(text: str, source: str) -> list[str]:
         for section in multi_agent:
             if section not in sections:
                 errors.append(f"{source}: missing full-spec multi-agent section `{section}`")
-        rows = table_rows(section_body(body, ["切片表", "Slice Table"]))
-        if len(rows) < 2:
-            errors.append(f"{source}: Slice Table needs at least 2 data rows")
+        errors.extend(lint_dispatch_matrix(body, source, zh))
+        errors.extend(lint_shared_ownership(body, source))
+        errors.extend(lint_subagent_result(body, source, zh))
 
     goal_lines = [line.strip() for line in body.splitlines() if line.strip().startswith("/goal")]
     if not goal_lines:

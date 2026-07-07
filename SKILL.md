@@ -19,7 +19,7 @@ Turn a user's task into a short manual launcher plus a complete goal spec saved 
 - If the user asks for all/mainstream formats, include: `codex`, `claude`, `gemini`, `cursor`, `github`, `markdown`.
 - Use `compact` when the user asks for a short inline goal, direct copyable `/goal`, or a trivial task.
 - Use `review` when the user asks to inspect, audit, compare, improve, lint, or fix an existing goal.
-- Full-spec goals default to multi-agent-first execution: include the multi-agent collaboration contract and require the future main session to attempt parallel slice dispatch before implementation.
+- Full-spec goals default to forced subagent dispatch: include the dispatch protocol contract and require the future main session to define real parallel slices before implementation.
 - If the user asks to configure Codex subagent concurrency or capacity, include the Codex subagent capacity setup contract.
 - Keep the chat command under 140 characters when possible. Put all detail in the saved goal file.
 - Creation is manual by default: output and save the goal, but do not start the work described by the goal.
@@ -134,26 +134,35 @@ Forbidden:
 ## Multi-Agent Collaboration
 
 - Main session freezes the original goal, success criteria, non-negotiables, shared interfaces, and file boundaries before dispatch.
-- Main session attempts to delegate at least two substantial low-conflict slices before implementation.
+- Main session attempts to delegate at least two substantial, low-conflict, parallelizable vertical slices before implementation.
 - Main session owns scheduling, shared files, conflict handling, merge decisions, and final project-level verification.
 - Subagents may decompose implementation but must not weaken the saved goal contract.
 
-## Slice Table
+## Dispatch Matrix
 
-| Slice | Owner | Allowed Files | Forbidden Files | Expected Output | Verification | Merge Risk |
-| --- | --- | --- | --- | --- | --- | --- |
-| ... | subagent | ... | ... | ... | ... | ... |
+| Slice | Agent Role | Goal | Allowed Files | Forbidden Files | Inputs | Required Output | Verify | Depends On | Merge Owner |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| implementation | subagent | ... | ... | ... | ... | changed files, verification command, result, risk, handoff | ... | none | main session |
+| verification | subagent | ... | ... | ... | ... | changed files, verification command, result, risk, handoff | ... | implementation | main session |
 
-## Subagent Deliverables
+## Shared File Ownership
 
-- Slice name
-- Changed files
-- Key implementation notes
-- Verification commands
-- Verification results
-- Known risks
-- Handoff notes
-- Any boundary crossing needed
+Main-session-owned:
+- ...
+
+Subagent-owned:
+- ...
+
+## Subagent Result
+
+Slice:
+Status: adopted | needs-main-merge | blocked | rejected
+Changed Files:
+Verification Run:
+Verification Result:
+Boundary Crossings:
+Risks:
+Handoff:
 
 ## Merge Policy
 
@@ -194,22 +203,28 @@ Chinese label map:
 - `Safety / Constraints` -> `安全 / 约束`
 - `Iteration Policy` -> `迭代策略`
 - `Multi-Agent Collaboration` -> `多代理协同`
-- `Slice Table` -> `切片表`
-- `Subagent Deliverables` -> `子代理交付物`
+- `Dispatch Matrix` -> `派发表`
+- `Shared File Ownership` -> `共享文件归属`
+- `Subagent Result` -> `子代理结果`
 - `Merge Policy` -> `合并策略`
 - `Rejection Conditions` -> `拒绝条件`
 - `Codex Subagent Capacity Setup` -> `Codex 子代理并发配置`
 - `Slice` -> `切片`
-- `Owner` -> `负责人`
+- `Agent Role` -> `代理角色`
+- `Goal` -> `目标`
 - `Allowed Files` -> `允许文件`
 - `Forbidden Files` -> `禁止文件`
-- `Expected Output` -> `预期输出`
-- `Merge Risk` -> `合并风险`
+- `Inputs` -> `输入`
+- `Required Output` -> `必交输出`
+- `Verify` -> `验证`
+- `Depends On` -> `依赖`
+- `Merge Owner` -> `合并负责人`
 - `Changed files` -> `改动文件`
-- `Verification commands` -> `验证命令`
-- `Verification results` -> `验证结果`
-- `Known risks` -> `已知风险`
-- `Handoff notes` -> `交接说明`
+- `Verification Run` -> `验证命令`
+- `Verification Result` -> `验证结果`
+- `Boundary Crossings` -> `越界情况`
+- `Risks` -> `风险`
+- `Handoff` -> `交接说明`
 - `Stop` -> `停止`
 - `Pause` -> `暂停`
 
@@ -229,15 +244,15 @@ Quality bar before saving:
 - Pause names the first human or external blocker that should stop the agent.
 - Do not silently reduce scope. If constraints require a smaller first step, keep the full request in `Original Request`, put the reduction in `Pause` or assumptions needing confirmation, and do not present the reduced scope as the final goal.
 - When used with planning, TDD, verification, or superpowers workflows, the saved goal is the higher-level contract: later skills may decompose execution, but must not weaken `Objective`, `Non-Negotiables`, `Success Criteria`, or `Verification`.
-- Full-spec goals include `Multi-Agent Collaboration`, `Slice Table`, `Subagent Deliverables`, `Merge Policy`, and `Rejection Conditions` by default.
-- The multi-agent contract requires at least two substantial low-conflict slices when possible, and puts unsplittable work in `Pause` instead of inventing fake parallelism.
+- Full-spec goals include `Multi-Agent Collaboration`, `Dispatch Matrix`, `Shared File Ownership`, `Subagent Result`, `Merge Policy`, and `Rejection Conditions` by default.
+- The dispatch protocol requires at least two substantial low-conflict slices when possible, and puts unsplittable work in `Pause` instead of inventing fake parallel work.
 - Subagents must not be used only for simple reading, summarizing, searching, formatting, or one tiny function.
 
-### Multi-agent collaboration default
+### Dispatch protocol default
 
 Use this by default for `full-spec` goals.
 
-The future executing main session must first try to split work into at least two substantial low-conflict slices before implementation. If the work cannot be split, say so in `Pause` instead of inventing fake parallel work.
+The future executing main session must first split work into at least two substantial, low-conflict, parallelizable vertical slices before implementation. If the work cannot be split, say so in `Pause` instead of inventing fake parallel work.
 
 Include these sections in the saved full-spec goal:
 
@@ -249,23 +264,33 @@ Include these sections in the saved full-spec goal:
 - Main session owns scheduling, shared files, conflict handling, merge decisions, and final project-level verification.
 - Subagents may decompose implementation but must not weaken the saved goal contract.
 
-## Slice Table
+## Dispatch Matrix
 
-| Slice | Owner | Allowed Files | Forbidden Files | Expected Output | Verification | Merge Risk |
-| --- | --- | --- | --- | --- | --- | --- |
-| ... | subagent | ... | ... | ... | ... | ... |
+| Slice | Agent Role | Goal | Allowed Files | Forbidden Files | Inputs | Required Output | Verify | Depends On | Merge Owner |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| contract/interface | subagent | ... | ... | ... | ... | changed files, verification command, result, risk, handoff | ... | none | main session |
+| implementation | subagent | ... | ... | ... | ... | changed files, verification command, result, risk, handoff | ... | contract/interface | main session |
 
-## Subagent Deliverables
+Allowed slice types: `contract/interface`, `implementation`, `verification`, `docs/handoff`, `config/tooling`.
 
-Each subagent must return:
-- Slice name
-- Changed files
-- Key implementation notes
-- Verification commands
-- Verification results
-- Known risks
-- Handoff notes
-- Any boundary crossing needed
+## Shared File Ownership
+
+Main-session-owned:
+- shared interfaces, global docs, release notes, and files edited by multiple slices
+
+Subagent-owned:
+- files explicitly listed in that row's `Allowed Files`
+
+## Subagent Result
+
+Slice:
+Status: adopted | needs-main-merge | blocked | rejected
+Changed Files:
+Verification Run:
+Verification Result:
+Boundary Crossings:
+Risks:
+Handoff:
 
 ## Merge Policy
 
@@ -274,6 +299,7 @@ Each subagent must return:
 - Shared files are edited by the main session unless the slice explicitly allows them.
 - Do not bypass completed subagent work and reimplement it silently; adopt it, adapt it with explanation, or reject it with cause.
 - On conflict, narrow boundaries or move the shared-file work back to the main session.
+- Consume each `Subagent Result` before merging, then run final project-level tests/builds after all adopted work is merged.
 
 ## Rejection Conditions
 

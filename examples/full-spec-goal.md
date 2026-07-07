@@ -80,26 +80,35 @@ Forbidden:
 
 ## Multi-Agent Collaboration
 
-- Full-spec goals default to multi-agent-first execution.
-- Main session must first attempt at least two substantial low-conflict slices; if impossible, record the reason in `Pause`.
+- Full-spec goals default to forced subagent dispatch.
+- Main session must first attempt at least two substantial, low-conflict, parallelizable vertical slices; if impossible, record the reason in `Pause`.
 
-## Slice Table
+## Dispatch Matrix
 
-| Slice | Owner | Allowed Files | Forbidden Files | Expected Output | Verification | Merge Risk |
-| --- | --- | --- | --- | --- | --- | --- |
-| Skill rules | subagent | SKILL.md | unrelated files | default multi-agent contract documented | `python scripts/smoke_test.py` | medium |
-| Validation | subagent | scripts/smoke_test.py, scripts/lint_goal_file.py | unrelated files | regression checks cover goal quality | `python scripts/smoke_test.py` | low |
+| Slice | Agent Role | Goal | Allowed Files | Forbidden Files | Inputs | Required Output | Verify | Depends On | Merge Owner |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| docs/handoff | subagent | Document the forced dispatch contract in user-facing docs | SKILL.md, README.md | scripts/save_goal.py, unrelated files | Current full-spec contract and user feedback | Changed files, verification command, result, risk, handoff | `python scripts/smoke_test.py` | none | main session |
+| verification | subagent | Enforce the dispatch contract in examples and lint checks | scripts/smoke_test.py, scripts/lint_goal_file.py, examples/full-spec-goal.md | unrelated files | Required dispatch matrix and result template | Changed files, verification command, result, risk, handoff | `python scripts/smoke_test.py` and `python scripts/lint_goal_file.py examples/full-spec-goal.md` | docs/handoff | main session |
 
-## Subagent Deliverables
+## Shared File Ownership
 
-- Slice name
-- Changed files
-- Key implementation notes
-- Verification commands
-- Verification results
-- Known risks
-- Handoff notes
-- Any boundary crossing needed
+Main-session-owned:
+- Release tag and final merge decisions.
+- Any file touched by both slices.
+
+Subagent-owned:
+- Files explicitly listed in each dispatch row's `Allowed Files`.
+
+## Subagent Result
+
+Slice:
+Status: adopted | needs-main-merge | blocked | rejected
+Changed Files:
+Verification Run:
+Verification Result:
+Boundary Crossings:
+Risks:
+Handoff:
 
 ## Merge Policy
 

@@ -1,3 +1,3 @@
 display_name: Goal Creator
-short_description: Create saved goal contracts with short launchers, multi-agent coordination, and lint checks.
+short_description: Create saved goal contracts with short launchers, forced subagent dispatch, and lint checks.
 default_prompt: Use goal-creator to create and save a full-spec goal for my task.

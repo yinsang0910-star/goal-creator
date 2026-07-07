@@ -4,7 +4,7 @@
     "request": "用 goal-creator 为“做一个本地习惯追踪器 MVP”创建并保存一个 full-spec 目标。",
     "mode": "full-spec",
     "language": "zh",
-    "must_include": ["原始需求", "不可降级项", "多代理协同", "切片表", "验证", "暂停"],
+    "must_include": ["原始需求", "不可降级项", "多代理协同", "派发表", "共享文件归属", "子代理结果", "验证", "暂停"],
     "must_not_include": ["## Objective", "## Success Criteria", "Allowed:", "Forbidden:"]
   },
   {
@@ -21,7 +21,7 @@
     "mode": "compact",
     "language": "en",
     "must_include": ["/goal", "Verify", "Boundaries", "Stop", "Pause"],
-    "must_not_include": ["Slice Table", "Subagent Deliverables"]
+    "must_not_include": ["Dispatch Matrix", "Shared File Ownership", "Subagent Result", "派发表", "共享文件归属", "子代理结果"]
   },
   {
     "name": "high-risk-production",
