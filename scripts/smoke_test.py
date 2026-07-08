@@ -111,11 +111,11 @@ BODY = """# 冒烟目标
 
 ## 共享文件归属
 
-Main-session-owned:
+主会话归属:
 - README.md
 - SKILL.md
 
-Subagent-owned:
+子代理归属:
 - scripts/save_goal.py
 - scripts/smoke_test.py
 - scripts/lint_goal_file.py
@@ -123,7 +123,7 @@ Subagent-owned:
 ## 子代理结果
 
 切片:
-状态: adopted | needs-main-merge | blocked | rejected
+状态: 已采纳 | 需主会话合并 | 阻塞 | 拒绝
 改动文件:
 验证命令:
 验证结果:
@@ -334,10 +334,16 @@ def main() -> int:
         assert "Dispatch Matrix needs at least 2 data rows" in failed.stderr
 
         missing_owner = tmp / "missing-owner.md"
-        missing_owner.write_text(text.replace("Subagent-owned:", "Subagent owned:"), encoding="utf-8")
+        missing_owner.write_text(text.replace("子代理归属:", "Subagent owned:"), encoding="utf-8")
         failed = run_lint(missing_owner, check=False)
         assert failed.returncode == 1
-        assert "Shared File Ownership missing `Subagent-owned:`" in failed.stderr
+        assert "Shared File Ownership missing `子代理归属:`" in failed.stderr
+
+        english_status = tmp / "english-status.md"
+        english_status.write_text(text.replace("已采纳 | 需主会话合并 | 阻塞 | 拒绝", "adopted | needs-main-merge | blocked | rejected"), encoding="utf-8")
+        failed = run_lint(english_status, check=False)
+        assert failed.returncode == 1
+        assert "English workflow term `adopted` in Chinese goal" in failed.stderr
 
         missing_matrix_header = tmp / "missing-matrix-header.md"
         missing_matrix_header.write_text(text.replace("合并负责人 |", "|"), encoding="utf-8")

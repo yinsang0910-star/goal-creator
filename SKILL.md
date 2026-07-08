@@ -263,6 +263,9 @@ Chinese label map:
 - `Boundary Crossings` -> `越界情况`
 - `Risks` -> `风险`
 - `Handoff` -> `交接说明`
+- `Main-session-owned:` -> `主会话归属:`
+- `Subagent-owned:` -> `子代理归属:`
+- `adopted | needs-main-merge | blocked | rejected` -> `已采纳 | 需主会话合并 | 阻塞 | 拒绝`
 - `Stop` -> `停止`
 - `Pause` -> `暂停`
 
@@ -270,6 +273,7 @@ Quality bar before saving:
 
 - Use one target language for all visible headings and prose. Exceptions: command names, file paths, code identifiers, format names, and proper nouns.
 - For non-English goals, translate labels and launcher wording; do not keep English headings like `Objective`, `Success Criteria`, `Allowed`, or `Forbidden`.
+- For Chinese goals, translate workflow markers and enum values too: use `主会话归属:`, `子代理归属:`, and `已采纳 | 需主会话合并 | 阻塞 | 拒绝`; do not output `Main-session-owned:`, `Subagent-owned:`, `adopted`, `needs-main-merge`, `blocked`, or `rejected`.
 - Objective names one concrete outcome and the main artifact or behavior change, without replacing the user's request with a smaller substitute.
 - Original Request preserves the user's requested outcome/design intent before any agent decomposition.
 - Non-Negotiables lists user-provided acceptance criteria, design requirements, no-touch boundaries, and must-keep behaviors.

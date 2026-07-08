@@ -150,6 +150,7 @@ DISPATCH_FAKE_SLICE_FIELDS_EN = ["Agent Role", "Goal", "Required Output"]
 DISPATCH_FAKE_SLICE_FIELDS_ZH = ["代理角色", "目标", "必交输出"]
 
 SHARED_OWNER_MARKERS = ["Main-session-owned:", "Subagent-owned:"]
+SHARED_OWNER_MARKERS_ZH = ["主会话归属:", "子代理归属:"]
 
 SUBAGENT_RESULT_FIELDS_EN = [
     "Slice:",
@@ -205,6 +206,19 @@ EN_LABELS_IN_ZH = [
     "Rejection Conditions",
     "Stop",
     "Pause",
+]
+
+EN_FLOW_TERMS_IN_ZH = [
+    "adopted",
+    "needs-main-merge",
+    "blocked",
+    "rejected",
+    "Main-session-owned:",
+    "Subagent-owned:",
+    "main session",
+    "substitute executor",
+    "minimum 2 subagents",
+    "minimum 4 subagents",
 ]
 
 
@@ -304,10 +318,11 @@ def lint_dispatch_matrix(body: str, source: str, zh: bool) -> list[str]:
     return errors
 
 
-def lint_shared_ownership(body: str, source: str) -> list[str]:
+def lint_shared_ownership(body: str, source: str, zh: bool) -> list[str]:
     errors: list[str] = []
     section = section_body(body, ["共享文件归属", "Shared File Ownership"])
-    for marker in SHARED_OWNER_MARKERS:
+    markers = SHARED_OWNER_MARKERS_ZH if zh else SHARED_OWNER_MARKERS
+    for marker in markers:
         if marker not in section:
             errors.append(f"{source}: Shared File Ownership missing `{marker}`")
     return errors
@@ -405,7 +420,7 @@ def lint_text(text: str, source: str) -> list[str]:
             if section not in sections:
                 errors.append(f"{source}: missing full-spec multi-agent section `{section}`")
         errors.extend(lint_dispatch_matrix(body, source, zh))
-        errors.extend(lint_shared_ownership(body, source))
+        errors.extend(lint_shared_ownership(body, source, zh))
         errors.extend(lint_subagent_result(body, source, zh))
 
     goal_lines = [line.strip() for line in body.splitlines() if line.strip().startswith("/goal")]
@@ -438,6 +453,9 @@ def lint_text(text: str, source: str) -> list[str]:
                 errors.append(f"{source}: English heading `{label}` in Chinese goal")
         if re.search(r"^(Allowed|Forbidden):\s*$", body, flags=re.MULTILINE):
             errors.append(f"{source}: English scope label in Chinese goal")
+        for term in EN_FLOW_TERMS_IN_ZH:
+            if term in body:
+                errors.append(f"{source}: English workflow term `{term}` in Chinese goal")
 
     if has_config_setup(sections):
         for required_text in [
