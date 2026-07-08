@@ -190,7 +190,7 @@ Handoff:
 
 Chinese label map:
 
-- `Short Command` -> `短启动命令`
+- `Short Command` -> `启动入口`
 - `Objective` -> `目标`
 - `Original Request` -> `原始需求`
 - `Non-Negotiables` -> `不可降级项`

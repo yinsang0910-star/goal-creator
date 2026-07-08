@@ -21,7 +21,7 @@ OPENAI_YAML = ROOT / "agents" / "openai.yaml"
 FRONTMATTER_KEYS = {"name", "description"}
 BODY = """# 冒烟目标
 
-## 短启动命令
+## 启动入口
 
 ```text
 /goal 只执行 `.goals/example.md`
@@ -37,7 +37,7 @@ BODY = """# 冒烟目标
 
 ## 不可降级项
 
-- 保留短启动命令。
+- 保留启动入口。
 - 保留完整目标合同。
 
 ## 成功标准
@@ -54,7 +54,7 @@ BODY = """# 冒烟目标
 
 ## 验证
 
-- 保存文件包含 frontmatter 和短启动命令。
+- 保存文件包含 frontmatter 和启动入口。
 
 ## 安全 / 约束
 
@@ -195,7 +195,7 @@ def main() -> int:
         assert 'title: "创建目标"' in text
         assert "mode: full-spec" in text
         assert "formats:\n  - codex" in text
-        assert "## 短启动命令" in text
+        assert "## 启动入口" in text
         assert "/goal 只执行 `.goals/example.md`" in text
         assert "## 原始需求" in text
         assert "## 不可降级项" in text
@@ -275,6 +275,7 @@ def main() -> int:
         assert "do not keep English headings" in skill_text
         assert "Chinese label map" in skill_text
         assert "`Allowed` -> `允许`" in skill_text
+        assert "`Short Command` -> `启动入口`" in skill_text
         assert "`Codex Subagent Capacity Setup` -> `Codex 子代理并发配置`" in skill_text
         assert "`Required Output` -> `必交输出`" in skill_text
         assert "render visible field labels in the target language" in skill_text
