@@ -4,7 +4,7 @@
     "request": "用 goal-creator 为“做一个本地习惯追踪器 MVP”创建并保存一个 full-spec 目标。",
     "mode": "full-spec",
     "language": "zh",
-    "must_include": ["原始需求", "不可降级项", "Codex 执行契约", "AGENTS.md", "git diff --check", "多代理协同", "派发表", "共享文件归属", "子代理结果", "验证", "暂停"],
+    "must_include": ["原始需求", "不可降级项", "Codex 执行契约", "AGENTS.md", "git diff --check", "子代理容量前置", "~/.codex/config.toml", "子代理派发决策", "L0", "L1", "L2", "L3", "子代理执行力释放", "多代理协同", "派发表", "共享文件归属", "子代理结果", "验证", "暂停"],
     "must_not_include": ["## Objective", "## Success Criteria", "Allowed:", "Forbidden:"]
   },
   {
@@ -14,6 +14,14 @@
     "language": "zh",
     "must_include": ["~/.codex/config.toml", "max_threads = 2147483647", "codex --strict-config doctor --summary --ascii", "loaded", "不要删除或重排现有配置"],
     "must_not_include": ["删除现有配置后重写"]
+  },
+  {
+    "name": "subagent-liberation-complex",
+    "request": "用 goal-creator 为“跨前后端重构用户设置，并补齐测试和文档”创建一个能最大释放 Codex 子代理执行力的 full-spec 目标。",
+    "mode": "full-spec",
+    "language": "zh",
+    "must_include": ["子代理容量前置", "~/.codex/config.toml", "max_threads = 2147483647", "codex --strict-config doctor --summary --ascii", "子代理派发决策", "L2", "L3", "子代理执行力释放", "调度", "下放", "最终验证", "派发表", "允许文件", "禁止文件", "合并负责人"],
+    "must_not_include": ["只阅读", "只总结", "无需验证"]
   },
   {
     "name": "compact-readme",

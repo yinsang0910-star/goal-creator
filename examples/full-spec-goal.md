@@ -86,17 +86,40 @@ Forbidden:
 - Final checks: `git status --short`, `git diff --check`, and `python scripts/smoke_test.py`.
 - Chat output: report only saved path, launcher, verification result, and material risks.
 
+## Subagent Capacity Prerequisite
+
+- Before using full-spec / subagent-first goals, check the current user's `~/.codex/config.toml`.
+- If `[agents]` exists, update only `max_threads = 2147483647` and `max_depth = 2147483647`; if it does not exist, append it.
+- Do not delete or reorder existing config.
+- Run `codex --strict-config doctor --summary --ascii`.
+- Continue only after the output shows `Configuration` / `config` is `loaded`.
+
+## Subagent Dispatch Decision
+
+- L0: no subagent. Use for single-file small edits, explanations, simple commands, and wording tweaks.
+- L1: one subagent. Use for isolated reading, local verification, or risk review.
+- L2: 2-3 subagents. Use for cross-module work, code plus tests, or implementation and verification that can proceed in parallel.
+- L3: 4+ subagents. Use for multi-module migrations, broad refactors, investigations, and batch fixes.
+- This task is L2 because docs, lint, and examples can be split by file ownership.
+
+## Subagent Execution Liberation
+
+- Main session runs as scheduler, merger, boundary judge, and final verification owner.
+- Delegate execution work that can be isolated, verified, and handed off.
+- Subagents own context reading, implementation, local tests, local fixes, and risk reporting inside their file range.
+- Main session keeps goal freezing, file-boundary decisions, merge decisions, and final verification.
+
 ## Multi-Agent Collaboration
 
-- Full-spec goals default to forced subagent dispatch.
-- Main session must first attempt at least two substantial, low-conflict, parallelizable vertical slices; if impossible, record the reason in `Pause`.
+- Main session selects L0/L1/L2/L3 before implementation and dispatches only useful slices.
+- Main session must avoid fake parallel work and keep file ownership explicit.
 
 ## Dispatch Matrix
 
 | Slice | Agent Role | Goal | Allowed Files | Forbidden Files | Inputs | Required Output | Verify | Depends On | Merge Owner |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| docs/handoff | subagent | Document the forced dispatch contract in user-facing docs | SKILL.md, README.md | scripts/save_goal.py, unrelated files | Current full-spec contract and user feedback | Changed files, verification command, result, risk, handoff | `python scripts/smoke_test.py` | none | main session |
-| verification | subagent | Enforce the dispatch contract in examples and lint checks | scripts/smoke_test.py, scripts/lint_goal_file.py, examples/full-spec-goal.md | unrelated files | Required dispatch matrix and result template | Changed files, verification command, result, risk, handoff | `python scripts/smoke_test.py` and `python scripts/lint_goal_file.py examples/full-spec-goal.md` | docs/handoff | main session |
+| docs/handoff | subagent | Document the subagent-first contract in user-facing docs | SKILL.md, README.md | scripts/save_goal.py, unrelated files | Current full-spec contract and user feedback | Changed files, verification command, result, risk, handoff | `python scripts/smoke_test.py` | none | main session |
+| verification | subagent | Enforce dispatch levels and liberation checks in examples and lint | scripts/smoke_test.py, scripts/lint_goal_file.py, examples/full-spec-goal.md | unrelated files | Required dispatch matrix and result template | Changed files, verification command, result, risk, handoff | `python scripts/smoke_test.py` and `python scripts/lint_goal_file.py examples/full-spec-goal.md` | docs/handoff | main session |
 
 ## Shared File Ownership
 
@@ -130,14 +153,6 @@ Handoff:
 - Reject subagent work that crosses file boundaries.
 - Reject work that skips verification or weakens the goal.
 - Reject work that cannot be understood or merged from the handoff.
-
-## Codex Subagent Capacity Setup
-
-- Include only when the user asks to configure Codex subagent concurrency or capacity.
-- Update `~/.codex/config.toml` without deleting or reordering existing config.
-- Ensure `[agents]` contains `max_threads = 2147483647` and `max_depth = 2147483647`.
-- Run `codex --strict-config doctor --summary --ascii`.
-- Verify `Configuration` / `config` is `loaded`.
 
 ## Stop
 

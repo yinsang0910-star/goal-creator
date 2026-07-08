@@ -47,8 +47,8 @@ A short launcher plus a complete Codex / Claude / Gemini / Cursor / GitHub-ready
 It avoids giant chat prompts. The chat command stays short; the saved `.goals/*.md` file keeps the full plan.
 It also preserves the original request so later execution cannot quietly weaken the acceptance bar.
 For non-English goals, headings, labels, launcher wording, and prose stay in the target language.
-Full-spec goals include a Codex execution contract, forced subagent dispatch matrix, shared file ownership, fixed subagent result template, merge policy, and rejection conditions.
-It can also create a Codex subagent capacity setup goal for `~/.codex/config.toml` when requested.
+Full-spec goals include a Codex execution contract, subagent capacity prerequisite, L0/L1/L2/L3 dispatch decision, execution-liberation contract, dispatch matrix, shared file ownership, fixed subagent result template, merge policy, and rejection conditions.
+Before relying on full-spec subagent execution, configure Codex agents in `~/.codex/config.toml`.
 Creating a goal does not execute it. Paste or invoke the returned launcher only when you want the agent to start.
 
 ### What It Does
@@ -57,8 +57,8 @@ Creating a goal does not execute it. Paste or invoke the returned launcher only 
 - Saves full execution specs for detailed work.
 - Saves goals into the current project under `.goals/`.
 - Follows the user's language for headings and prose.
-- Adds forced subagent dispatch rules to full-spec goals by default.
-- Adds Codex subagent capacity setup instructions when requested.
+- Adds subagent-first execution rules to full-spec goals by default.
+- Requires Codex subagent capacity setup before subagent-first execution.
 - Renders mainstream agent formats:
   - Codex `/goal`
   - Claude Code
@@ -77,9 +77,27 @@ cd .\goal-creator
 python scripts\install_local.py
 ```
 
-2. Restart your agent.
+2. Configure Codex subagent capacity in `~/.codex/config.toml`:
 
-3. Ask:
+```toml
+[agents]
+max_threads = 2147483647
+max_depth = 2147483647
+```
+
+If `[agents]` already exists, update only those fields. Do not delete or reorder existing config.
+
+3. Verify Codex loads the config:
+
+```powershell
+codex --strict-config doctor --summary --ascii
+```
+
+Confirm `Configuration` / `config` is `loaded`.
+
+4. Restart your agent.
+
+5. Ask:
 
 ```text
 Use goal-creator to create and save a compact goal for refactoring the backtest module.
@@ -119,7 +137,7 @@ Review an existing goal:
 Use goal-creator to review this goal for missing verification, weak boundaries, language mixing, and multi-agent gaps.
 ```
 
-Create a goal that also prepares Codex subagent capacity:
+Create a standalone goal for preparing another machine's Codex subagent capacity:
 
 ```text
 Use goal-creator to create and save a goal for configuring Codex subagent concurrency.
@@ -131,7 +149,7 @@ Run a saved goal later:
 /goal Execute only `.goals/<file>.md`.
 ```
 
-Full-spec goals include forced subagent dispatch by default. The executing main session must define a `Dispatch Matrix`, keep shared files under `Shared File Ownership`, consume each fixed `Subagent Result`, merge serially, and run final project-level verification.
+Full-spec goals are subagent-first by default. The executing main session must choose L0/L1/L2/L3, keep simple tasks at L0, delegate real file-owned slices for complex work, define a `Dispatch Matrix`, keep shared files under `Shared File Ownership`, consume each fixed `Subagent Result`, merge serially, and run final project-level verification.
 
 Saved full-spec goals can be checked locally:
 
@@ -168,8 +186,8 @@ The saved file contains the original request, non-negotiables, full objective, s
 它不把又长又厚的提示词合同塞进聊天框。聊天里的 `/goal` 保持短，完整流程放进 `.goals/*.md`。
 它会保留原始需求，避免后续执行时悄悄降低验收标准。
 非英文目标会保持同一种目标语言，包括标题、字段标签、启动命令和正文。
-full-spec 目标默认加入 Codex 执行契约和强制子代理派发协议，明确派发表、共享文件归属、固定子代理结果模板、合并策略和拒绝条件。
-用户需要时，也可以生成调整 `~/.codex/config.toml` 的 Codex 子代理并发配置目标。
+full-spec 目标默认加入 Codex 执行契约、子代理容量前置、L0/L1/L2/L3 派发决策、执行力释放契约、派发表、共享文件归属、固定子代理结果模板、合并策略和拒绝条件。
+在依赖 full-spec 子代理执行前，需要先配置 `~/.codex/config.toml`。
 创建目标不会自动执行目标。只有当你粘贴或调用返回的启动命令时，Agent 才开始执行。
 
 ### 它能做什么
@@ -178,8 +196,8 @@ full-spec 目标默认加入 Codex 执行契约和强制子代理派发协议，
 - 把完整执行流程保存成目标文件。
 - 自动保存到当前项目的 `.goals/` 目录。
 - 标题和正文都跟随用户语言输出。
-- full-spec 目标默认加入强制子代理派发规则。
-- 按需加入 Codex 子代理并发上限配置步骤。
+- full-spec 目标默认加入 subagent-first 执行规则。
+- 使用 subagent-first 执行前要求配置 Codex 子代理并发上限。
 - 支持主流 Agent 格式：
   - Codex `/goal`
   - Claude Code
@@ -198,9 +216,27 @@ cd .\goal-creator
 python scripts\install_local.py
 ```
 
-2. 重启你的 Agent。
+2. 配置 Codex 子代理容量，修改 `~/.codex/config.toml`：
 
-3. 直接说：
+```toml
+[agents]
+max_threads = 2147483647
+max_depth = 2147483647
+```
+
+如果已经有 `[agents]` 段，只更新这两个字段。不要删除或重排现有配置。
+
+3. 验证 Codex 能加载配置：
+
+```powershell
+codex --strict-config doctor --summary --ascii
+```
+
+确认 `Configuration` / `config` 是 `loaded`。
+
+4. 重启你的 Agent。
+
+5. 直接说：
 
 ```text
 用 goal-creator 给“重构回测模块”创建并保存一个简洁目标。
@@ -240,7 +276,7 @@ python scripts\install_local.py
 用 goal-creator 检查这个 goal 是否缺少验证、边界、暂停条件，是否中英混用，是否缺少多代理协同。
 ```
 
-创建 Codex 子代理并发配置目标：
+为另一台机器创建 Codex 子代理并发配置目标：
 
 ```text
 用 goal-creator 创建并保存一个配置 Codex 子代理并发上限的目标。
@@ -252,7 +288,7 @@ python scripts\install_local.py
 /goal 只执行 `.goals/<file>.md`
 ```
 
-full-spec 目标默认包含强制子代理派发协议。未来执行的主会话必须先写出派发表，明确共享文件归属，消费每个固定格式的子代理结果，串行合并，并运行最终项目级验证。
+full-spec 目标默认是 subagent-first。未来执行的主会话必须先判断 L0/L1/L2/L3，简单任务保持 L0，复杂任务把真实、文件边界清楚的切片下放给子代理，明确派发表和共享文件归属，消费每个固定格式的子代理结果，串行合并，并运行最终项目级验证。
 
 保存后的 full-spec 目标可以本地检查：
 

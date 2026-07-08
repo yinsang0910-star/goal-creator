@@ -72,10 +72,33 @@ BODY = """# 冒烟目标
 - 收尾检查: `git status --short`、`git diff --check`、`python scripts/smoke_test.py`。
 - 聊天输出: 只报告保存路径、启动入口、验证结果和必要风险。
 
+## 子代理容量前置
+
+- 使用 full-spec / subagent-first 目标前，先检查当前用户的 `~/.codex/config.toml`。
+- 如果没有 `[agents]` 段，追加该段；如果已有，只更新 `max_threads = 2147483647` 和 `max_depth = 2147483647`。
+- 不要删除或重排现有配置。
+- 修改后运行 `codex --strict-config doctor --summary --ascii`。
+- 只有输出显示 `Configuration` / `config` 为 `loaded`，才继续执行需要子代理释放的任务。
+
+## 子代理派发决策
+
+- L0: 不派发，适用于单文件小修、简单解释、简单命令。
+- L1: 一个子代理，适用于隔离阅读、局部验证或风险检查。
+- L2: 2-3 个子代理，适用于跨模块或代码与测试可并行。
+- L3: 4 个以上子代理，适用于多模块迁移、重构、排查或批量修复。
+- 简单任务必须保持 L0，禁止为了形式派发无效子代理。
+
+## 子代理执行力释放
+
+- 主会话默认作为调度者、合并者和最终验证者运行。
+- 能隔离、能验证、能交付的执行工作优先下放给子代理。
+- 子代理负责读取上下文、实现、局部测试、局部修复和风险回报。
+- 主会话只保留目标冻结、边界裁决、合并和最终验证。
+
 ## 多代理协同
 
 - 主会话先冻结原始目标、成功标准、不可降级项、共享接口和文件边界。
-- 主会话默认先拆分至少两个实质性、低冲突、可并行的垂直切片并派发给子代理；无法拆分时写入暂停条件。
+- 主会话根据派发等级决定 L0/L1/L2/L3，不制造假并行。
 
 ## 派发表
 
@@ -214,8 +237,20 @@ def main() -> int:
         assert "Forbidden:" not in text
         assert "## Codex 执行契约" in text
         assert "AGENTS.md" in text
+        assert ".goals/example.md" in text
         assert "git status --short" in text
         assert "git diff --check" in text
+        assert "## 子代理容量前置" in text
+        assert "~/.codex/config.toml" in text
+        assert "max_threads = 2147483647" in text
+        assert "max_depth = 2147483647" in text
+        assert "codex --strict-config doctor --summary --ascii" in text
+        assert "loaded" in text
+        assert "## 子代理派发决策" in text
+        assert "L0" in text and "L1" in text and "L2" in text and "L3" in text
+        assert "## 子代理执行力释放" in text
+        assert "调度" in text
+        assert "下放" in text
         assert "## 多代理协同" in text
         assert "## 派发表" in text
         assert "## 共享文件归属" in text
@@ -261,6 +296,30 @@ def main() -> int:
         failed = run_lint(missing_codex_contract, check=False)
         assert failed.returncode == 1
         assert "missing full-spec Codex section" in failed.stderr
+
+        missing_capacity = tmp / "missing-capacity.md"
+        missing_capacity.write_text(
+            text.replace(
+                "## 子代理容量前置\n\n- 使用 full-spec / subagent-first 目标前，先检查当前用户的 `~/.codex/config.toml`。\n- 如果没有 `[agents]` 段，追加该段；如果已有，只更新 `max_threads = 2147483647` 和 `max_depth = 2147483647`。\n- 不要删除或重排现有配置。\n- 修改后运行 `codex --strict-config doctor --summary --ascii`。\n- 只有输出显示 `Configuration` / `config` 为 `loaded`，才继续执行需要子代理释放的任务。\n\n",
+                "",
+            ),
+            encoding="utf-8",
+        )
+        failed = run_lint(missing_capacity, check=False)
+        assert failed.returncode == 1
+        assert "missing full-spec multi-agent section `子代理容量前置`" in failed.stderr
+
+        missing_dispatch_decision = tmp / "missing-dispatch-decision.md"
+        missing_dispatch_decision.write_text(
+            text.replace(
+                "## 子代理派发决策\n\n- L0: 不派发，适用于单文件小修、简单解释、简单命令。\n- L1: 一个子代理，适用于隔离阅读、局部验证或风险检查。\n- L2: 2-3 个子代理，适用于跨模块或代码与测试可并行。\n- L3: 4 个以上子代理，适用于多模块迁移、重构、排查或批量修复。\n- 简单任务必须保持 L0，禁止为了形式派发无效子代理。\n\n",
+                "",
+            ),
+            encoding="utf-8",
+        )
+        failed = run_lint(missing_dispatch_decision, check=False)
+        assert failed.returncode == 1
+        assert "missing full-spec multi-agent section `子代理派发决策`" in failed.stderr
 
         one_slice = tmp / "one-slice.md"
         one_slice.write_text(text.replace("| verification | 子代理 | 扩展质量检查覆盖 | scripts/smoke_test.py, scripts/lint_goal_file.py | README.md, SKILL.md | 新协议验收标准 | 改动文件、验证命令、结果、风险、交接说明 | 运行 smoke test 和 goal file lint | implementation | 主会话 |\n", ""), encoding="utf-8")
@@ -309,10 +368,17 @@ def main() -> int:
         assert "saved goal is the higher-level contract" in skill_text
         assert "Codex Execution Contract" in skill_text
         assert "`Codex Execution Contract` -> `Codex 执行契约`" in skill_text
+        assert "Subagent Capacity Prerequisite" in skill_text
+        assert "Subagent Dispatch Decision" in skill_text
+        assert "Subagent Execution Liberation" in skill_text
+        assert "`Subagent Capacity Prerequisite` -> `子代理容量前置`" in skill_text
+        assert "`Subagent Dispatch Decision` -> `子代理派发决策`" in skill_text
+        assert "`Subagent Execution Liberation` -> `子代理执行力释放`" in skill_text
+        assert "L0" in skill_text and "L1" in skill_text and "L2" in skill_text and "L3" in skill_text
         assert "AGENTS.md" in skill_text
         assert "git status --short" in skill_text
         assert "Do not paste the saved goal body back into chat" in skill_text
-        assert "Full-spec goals default to forced subagent dispatch" in skill_text
+        assert "Full-spec goals default to subagent-first execution" in skill_text
         assert "Dispatch protocol default" in skill_text
         assert "Dispatch Matrix" in skill_text
         assert "Shared File Ownership" in skill_text

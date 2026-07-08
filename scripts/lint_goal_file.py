@@ -77,6 +77,9 @@ ZH_REQUIRED = [
 ]
 
 MULTI_AGENT_EN = [
+    "Subagent Capacity Prerequisite",
+    "Subagent Dispatch Decision",
+    "Subagent Execution Liberation",
     "Multi-Agent Collaboration",
     "Dispatch Matrix",
     "Shared File Ownership",
@@ -86,6 +89,9 @@ MULTI_AGENT_EN = [
 ]
 
 MULTI_AGENT_ZH = [
+    "子代理容量前置",
+    "子代理派发决策",
+    "子代理执行力释放",
     "多代理协同",
     "派发表",
     "共享文件归属",
@@ -96,7 +102,18 @@ MULTI_AGENT_ZH = [
 
 CODEX_SECTION_EN = "Codex Execution Contract"
 CODEX_SECTION_ZH = "Codex 执行契约"
-CODEX_CONTRACT_TERMS = ["AGENTS.md", "git status --short", "git diff --check"]
+CODEX_CONTRACT_TERMS = ["AGENTS.md", ".goals/", "git status --short", "git diff --check"]
+CAPACITY_TERMS = [
+    "~/.codex/config.toml",
+    "[agents]",
+    "max_threads = 2147483647",
+    "max_depth = 2147483647",
+    "codex --strict-config doctor --summary --ascii",
+    "loaded",
+]
+DISPATCH_LEVEL_TERMS = ["L0", "L1", "L2", "L3"]
+LIBERATION_TERMS_EN = ["scheduler", "merge", "final verification", "delegate"]
+LIBERATION_TERMS_ZH = ["调度", "合并", "最终验证", "下放"]
 
 DISPATCH_HEADERS_EN = [
     "Slice",
@@ -241,7 +258,12 @@ def has_config_setup(sections: set[str]) -> bool:
 
 
 def has_no_reorder_rule(body: str) -> bool:
-    return "不要删除或重排现有配置" in body or "without deleting or reordering existing config" in body.lower()
+    lowered = body.lower()
+    return (
+        "不要删除或重排现有配置" in body
+        or "without deleting or reordering existing config" in lowered
+        or "do not delete or reorder existing config" in lowered
+    )
 
 
 def lint_dispatch_matrix(body: str, source: str, zh: bool) -> list[str]:
@@ -315,6 +337,45 @@ def lint_codex_contract(body: str, sections: set[str], source: str, zh: bool) ->
     return errors
 
 
+def lint_capacity_prerequisite(body: str, source: str) -> list[str]:
+    errors: list[str] = []
+    section = section_body(body, ["子代理容量前置", "Subagent Capacity Prerequisite"])
+    if not section:
+        errors.append(f"{source}: missing subagent capacity prerequisite body")
+        return errors
+    for term in CAPACITY_TERMS:
+        if term not in section:
+            errors.append(f"{source}: subagent capacity prerequisite missing `{term}`")
+    if not has_no_reorder_rule(section):
+        errors.append(f"{source}: subagent capacity prerequisite missing no-delete/no-reorder rule")
+    return errors
+
+
+def lint_dispatch_decision(body: str, source: str) -> list[str]:
+    errors: list[str] = []
+    section = section_body(body, ["子代理派发决策", "Subagent Dispatch Decision"])
+    if not section:
+        errors.append(f"{source}: missing subagent dispatch decision body")
+        return errors
+    for term in DISPATCH_LEVEL_TERMS:
+        if term not in section:
+            errors.append(f"{source}: subagent dispatch decision missing `{term}`")
+    return errors
+
+
+def lint_liberation(body: str, source: str, zh: bool) -> list[str]:
+    errors: list[str] = []
+    section = section_body(body, ["子代理执行力释放", "Subagent Execution Liberation"])
+    if not section:
+        errors.append(f"{source}: missing subagent execution liberation body")
+        return errors
+    terms = LIBERATION_TERMS_ZH if zh else LIBERATION_TERMS_EN
+    for term in terms:
+        if term.lower() not in section.lower():
+            errors.append(f"{source}: subagent execution liberation missing `{term}`")
+    return errors
+
+
 def lint_text(text: str, source: str) -> list[str]:
     errors: list[str] = []
     frontmatter, body = parse_frontmatter(text)
@@ -330,6 +391,9 @@ def lint_text(text: str, source: str) -> list[str]:
     multi_agent = MULTI_AGENT_ZH if zh else MULTI_AGENT_EN
     if mode == "full-spec" or not mode:
         errors.extend(lint_codex_contract(body, sections, source, zh))
+        errors.extend(lint_capacity_prerequisite(body, source))
+        errors.extend(lint_dispatch_decision(body, source))
+        errors.extend(lint_liberation(body, source, zh))
         for section in multi_agent:
             if section not in sections:
                 errors.append(f"{source}: missing full-spec multi-agent section `{section}`")
