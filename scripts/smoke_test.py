@@ -213,6 +213,21 @@ def main() -> int:
         good = run_lint(first)
         assert "goal file lint ok" in good.stdout
 
+        fullwidth_colon = tmp / "fullwidth-colon.md"
+        fullwidth_colon.write_text(
+            text.replace("切片:", "切片：")
+            .replace("状态:", "状态：")
+            .replace("改动文件:", "改动文件：")
+            .replace("验证命令:", "验证命令：")
+            .replace("验证结果:", "验证结果：")
+            .replace("越界情况:", "越界情况：")
+            .replace("风险:", "风险：")
+            .replace("交接说明:", "交接说明："),
+            encoding="utf-8",
+        )
+        good = run_lint(fullwidth_colon)
+        assert "goal file lint ok" in good.stdout
+
         bad = tmp / "bad.md"
         bad.write_text(
             "---\ntitle: bad\nmode: full-spec\nlanguage: zh\nformats:\n  - codex\n---\n\n"

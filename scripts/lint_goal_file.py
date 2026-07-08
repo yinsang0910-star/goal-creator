@@ -139,14 +139,14 @@ SUBAGENT_RESULT_FIELDS_EN = [
 ]
 
 SUBAGENT_RESULT_FIELDS_ZH = [
-    "切片:",
-    "状态:",
-    "改动文件:",
-    "验证命令:",
-    "验证结果:",
-    "越界情况:",
-    "风险:",
-    "交接说明:",
+    "切片",
+    "状态",
+    "改动文件",
+    "验证命令",
+    "验证结果",
+    "越界情况",
+    "风险",
+    "交接说明",
 ]
 
 FAKE_SLICE_TERMS = [
@@ -288,7 +288,11 @@ def lint_subagent_result(body: str, source: str, zh: bool) -> list[str]:
     section = section_body(body, ["子代理结果", "Subagent Result"])
     fields = SUBAGENT_RESULT_FIELDS_ZH if zh else SUBAGENT_RESULT_FIELDS_EN
     for field in fields:
-        if field not in section:
+        if zh:
+            found = re.search(rf"^{re.escape(field)}\s*[:：]", section, flags=re.MULTILINE)
+        else:
+            found = field in section
+        if not found:
             errors.append(f"{source}: Subagent Result missing `{field}`")
     return errors
 
