@@ -78,6 +78,14 @@ Forbidden:
 - Rerun the smoke test after script or example edits.
 - If a check fails, inspect the exact output before retrying.
 
+## Codex Execution Contract
+
+- CWD: current project root.
+- Instruction source: read and obey applicable `AGENTS.md`.
+- Resumable artifact: this `.goals/2026-06-20-goal-creator-v0-2.md`.
+- Final checks: `git status --short`, `git diff --check`, and `python scripts/smoke_test.py`.
+- Chat output: report only saved path, launcher, verification result, and material risks.
+
 ## Multi-Agent Collaboration
 
 - Full-spec goals default to forced subagent dispatch.

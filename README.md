@@ -47,7 +47,7 @@ A short launcher plus a complete Codex / Claude / Gemini / Cursor / GitHub-ready
 It avoids giant chat prompts. The chat command stays short; the saved `.goals/*.md` file keeps the full plan.
 It also preserves the original request so later execution cannot quietly weaken the acceptance bar.
 For non-English goals, headings, labels, launcher wording, and prose stay in the target language.
-Full-spec goals include a forced subagent dispatch protocol with a dispatch matrix, shared file ownership, fixed subagent result template, merge policy, and rejection conditions.
+Full-spec goals include a Codex execution contract, forced subagent dispatch matrix, shared file ownership, fixed subagent result template, merge policy, and rejection conditions.
 It can also create a Codex subagent capacity setup goal for `~/.codex/config.toml` when requested.
 Creating a goal does not execute it. Paste or invoke the returned launcher only when you want the agent to start.
 
@@ -168,7 +168,7 @@ The saved file contains the original request, non-negotiables, full objective, s
 它不把又长又厚的提示词合同塞进聊天框。聊天里的 `/goal` 保持短，完整流程放进 `.goals/*.md`。
 它会保留原始需求，避免后续执行时悄悄降低验收标准。
 非英文目标会保持同一种目标语言，包括标题、字段标签、启动命令和正文。
-full-spec 目标默认加入强制子代理派发协议，明确派发表、共享文件归属、固定子代理结果模板、合并策略和拒绝条件。
+full-spec 目标默认加入 Codex 执行契约和强制子代理派发协议，明确派发表、共享文件归属、固定子代理结果模板、合并策略和拒绝条件。
 用户需要时，也可以生成调整 `~/.codex/config.toml` 的 Codex 子代理并发配置目标。
 创建目标不会自动执行目标。只有当你粘贴或调用返回的启动命令时，Agent 才开始执行。
 

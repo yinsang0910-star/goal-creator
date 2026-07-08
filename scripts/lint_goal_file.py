@@ -94,6 +94,10 @@ MULTI_AGENT_ZH = [
     "拒绝条件",
 ]
 
+CODEX_SECTION_EN = "Codex Execution Contract"
+CODEX_SECTION_ZH = "Codex 执行契约"
+CODEX_CONTRACT_TERMS = ["AGENTS.md", "git status --short", "git diff --check"]
+
 DISPATCH_HEADERS_EN = [
     "Slice",
     "Agent Role",
@@ -171,6 +175,7 @@ EN_LABELS_IN_ZH = [
     "Safety / Constraints",
     "Iteration Policy",
     "Multi-Agent Collaboration",
+    "Codex Execution Contract",
     "Slice Table",
     "Subagent Deliverables",
     "Dispatch Matrix",
@@ -297,6 +302,19 @@ def lint_subagent_result(body: str, source: str, zh: bool) -> list[str]:
     return errors
 
 
+def lint_codex_contract(body: str, sections: set[str], source: str, zh: bool) -> list[str]:
+    errors: list[str] = []
+    section_name = CODEX_SECTION_ZH if zh else CODEX_SECTION_EN
+    if section_name not in sections:
+        errors.append(f"{source}: missing full-spec Codex section `{section_name}`")
+        return errors
+    section = section_body(body, [CODEX_SECTION_ZH, CODEX_SECTION_EN])
+    for term in CODEX_CONTRACT_TERMS:
+        if term not in section:
+            errors.append(f"{source}: Codex contract missing `{term}`")
+    return errors
+
+
 def lint_text(text: str, source: str) -> list[str]:
     errors: list[str] = []
     frontmatter, body = parse_frontmatter(text)
@@ -311,6 +329,7 @@ def lint_text(text: str, source: str) -> list[str]:
 
     multi_agent = MULTI_AGENT_ZH if zh else MULTI_AGENT_EN
     if mode == "full-spec" or not mode:
+        errors.extend(lint_codex_contract(body, sections, source, zh))
         for section in multi_agent:
             if section not in sections:
                 errors.append(f"{source}: missing full-spec multi-agent section `{section}`")

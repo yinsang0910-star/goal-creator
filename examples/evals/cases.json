@@ -4,7 +4,7 @@
     "request": "用 goal-creator 为“做一个本地习惯追踪器 MVP”创建并保存一个 full-spec 目标。",
     "mode": "full-spec",
     "language": "zh",
-    "must_include": ["原始需求", "不可降级项", "多代理协同", "派发表", "共享文件归属", "子代理结果", "验证", "暂停"],
+    "must_include": ["原始需求", "不可降级项", "Codex 执行契约", "AGENTS.md", "git diff --check", "多代理协同", "派发表", "共享文件归属", "子代理结果", "验证", "暂停"],
     "must_not_include": ["## Objective", "## Success Criteria", "Allowed:", "Forbidden:"]
   },
   {

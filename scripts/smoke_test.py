@@ -64,6 +64,14 @@ BODY = """# 冒烟目标
 
 - 每次有意义改动后重跑检查。
 
+## Codex 执行契约
+
+- CWD: 当前项目根目录。
+- 指令来源: 读取并遵守适用的 AGENTS.md。
+- 可恢复产物: 本文件 `.goals/example.md`。
+- 收尾检查: `git status --short`、`git diff --check`、`python scripts/smoke_test.py`。
+- 聊天输出: 只报告保存路径、启动入口、验证结果和必要风险。
+
 ## 多代理协同
 
 - 主会话先冻结原始目标、成功标准、不可降级项、共享接口和文件边界。
@@ -204,6 +212,10 @@ def main() -> int:
         assert "## Success Criteria" not in text
         assert "Allowed:" not in text
         assert "Forbidden:" not in text
+        assert "## Codex 执行契约" in text
+        assert "AGENTS.md" in text
+        assert "git status --short" in text
+        assert "git diff --check" in text
         assert "## 多代理协同" in text
         assert "## 派发表" in text
         assert "## 共享文件归属" in text
@@ -237,6 +249,18 @@ def main() -> int:
         failed = run_lint(bad, check=False)
         assert failed.returncode == 1
         assert "missing section" in failed.stderr
+
+        missing_codex_contract = tmp / "missing-codex-contract.md"
+        missing_codex_contract.write_text(
+            text.replace(
+                "## Codex 执行契约\n\n- CWD: 当前项目根目录。\n- 指令来源: 读取并遵守适用的 AGENTS.md。\n- 可恢复产物: 本文件 `.goals/example.md`。\n- 收尾检查: `git status --short`、`git diff --check`、`python scripts/smoke_test.py`。\n- 聊天输出: 只报告保存路径、启动入口、验证结果和必要风险。\n\n",
+                "",
+            ),
+            encoding="utf-8",
+        )
+        failed = run_lint(missing_codex_contract, check=False)
+        assert failed.returncode == 1
+        assert "missing full-spec Codex section" in failed.stderr
 
         one_slice = tmp / "one-slice.md"
         one_slice.write_text(text.replace("| verification | 子代理 | 扩展质量检查覆盖 | scripts/smoke_test.py, scripts/lint_goal_file.py | README.md, SKILL.md | 新协议验收标准 | 改动文件、验证命令、结果、风险、交接说明 | 运行 smoke test 和 goal file lint | implementation | 主会话 |\n", ""), encoding="utf-8")
@@ -283,6 +307,11 @@ def main() -> int:
         assert "must not weaken user-provided acceptance criteria" in skill_text
         assert "Do not silently reduce scope" in skill_text
         assert "saved goal is the higher-level contract" in skill_text
+        assert "Codex Execution Contract" in skill_text
+        assert "`Codex Execution Contract` -> `Codex 执行契约`" in skill_text
+        assert "AGENTS.md" in skill_text
+        assert "git status --short" in skill_text
+        assert "Do not paste the saved goal body back into chat" in skill_text
         assert "Full-spec goals default to forced subagent dispatch" in skill_text
         assert "Dispatch protocol default" in skill_text
         assert "Dispatch Matrix" in skill_text

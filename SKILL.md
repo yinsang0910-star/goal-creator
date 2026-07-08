@@ -24,6 +24,7 @@ Turn a user's task into a short manual launcher plus a complete goal spec saved 
 - Keep the chat command under 140 characters when possible. Put all detail in the saved goal file.
 - Creation is manual by default: output and save the goal, but do not start the work described by the goal.
 - Ask at most one question only when the missing answer changes risk, ownership, cost, or write location.
+- Codex-first means the saved file is the execution artifact: Do not paste the saved goal body back into chat.
 
 ## Trigger Examples
 
@@ -131,6 +132,14 @@ Forbidden:
 
 - ...
 
+## Codex Execution Contract
+
+- CWD: current project root.
+- Instruction source: read and obey applicable `AGENTS.md`.
+- Resumable artifact: this `.goals/<file>.md`.
+- Final checks: `git status --short`, `git diff --check`, and the smallest project-specific test or lint command.
+- Chat output: report only saved path, launcher, verification result, and material risks.
+
 ## Multi-Agent Collaboration
 
 - Main session freezes the original goal, success criteria, non-negotiables, shared interfaces, and file boundaries before dispatch.
@@ -202,6 +211,7 @@ Chinese label map:
 - `Verification` -> `验证`
 - `Safety / Constraints` -> `安全 / 约束`
 - `Iteration Policy` -> `迭代策略`
+- `Codex Execution Contract` -> `Codex 执行契约`
 - `Multi-Agent Collaboration` -> `多代理协同`
 - `Dispatch Matrix` -> `派发表`
 - `Shared File Ownership` -> `共享文件归属`
@@ -242,6 +252,7 @@ Quality bar before saving:
 - Safety / Constraints names no-touch areas and any destructive, credential, production, trading, privacy, or cost risks.
 - Stop is a concrete completion evidence, not "when done".
 - Pause names the first human or external blocker that should stop the agent.
+- Codex Execution Contract names the current working directory, applicable `AGENTS.md`, resumable `.goals/*.md` artifact, `git status --short`, `git diff --check`, and a project-specific verification command.
 - Do not silently reduce scope. If constraints require a smaller first step, keep the full request in `Original Request`, put the reduction in `Pause` or assumptions needing confirmation, and do not present the reduced scope as the final goal.
 - When used with planning, TDD, verification, or superpowers workflows, the saved goal is the higher-level contract: later skills may decompose execution, but must not weaken `Objective`, `Non-Negotiables`, `Success Criteria`, or `Verification`.
 - Full-spec goals include `Multi-Agent Collaboration`, `Dispatch Matrix`, `Shared File Ownership`, `Subagent Result`, `Merge Policy`, and `Rejection Conditions` by default.
@@ -257,6 +268,14 @@ The future executing main session must first split work into at least two substa
 Include these sections in the saved full-spec goal:
 
 ```markdown
+## Codex Execution Contract
+
+- CWD: current project root.
+- Instruction source: read and obey applicable `AGENTS.md`.
+- Resumable artifact: this `.goals/<file>.md`.
+- Final checks: `git status --short`, `git diff --check`, and the smallest project-specific test or lint command.
+- Chat output: report only saved path, launcher, verification result, and material risks.
+
 ## Multi-Agent Collaboration
 
 - Main session freezes the original goal, success criteria, non-negotiables, shared interfaces, and file boundaries before dispatch.
