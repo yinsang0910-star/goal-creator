@@ -92,15 +92,17 @@ Forbidden:
 - If `[agents]` exists, update only `max_threads = 2147483647` and `max_depth = 2147483647`; if it does not exist, append it.
 - Do not delete or reorder existing config.
 - Run `codex --strict-config doctor --summary --ascii`.
+- On Windows, if `codex` is blocked by PowerShell execution policy or shim handling, run `codex.cmd --strict-config doctor --summary --ascii`.
 - Continue only after the output shows `Configuration` / `config` is `loaded`.
 
 ## Subagent Dispatch Decision
 
 - L0: no subagent. Use for single-file small edits, explanations, simple commands, and wording tweaks.
 - L1: one subagent. Use for isolated reading, local verification, or risk review.
-- L2: 2-3 subagents. Use for cross-module work, code plus tests, or implementation and verification that can proceed in parallel.
-- L3: 4+ subagents. Use for multi-module migrations, broad refactors, investigations, and batch fixes.
+- L2: minimum 2 subagents. Use for cross-module work, code plus tests, or implementation and verification that can proceed in parallel.
+- L3: minimum 4 subagents. Use for multi-module migrations, broad refactors, investigations, and batch fixes.
 - This task is L2 because docs, lint, and examples can be split by file ownership.
+- If L2/L3 is selected and the session cannot create the required subagents, pause; the main session must not continue as the substitute executor.
 
 ## Subagent Execution Liberation
 

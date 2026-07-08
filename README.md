@@ -70,8 +70,10 @@ Dispatch levels:
 | --- | --- |
 | L0 | Single-file small edit, simple explanation, simple command, wording tweak |
 | L1 | One isolated reader/verifier/risk-review subagent is useful |
-| L2 | 2-3 file-owned slices can work in parallel, usually code plus tests/docs |
-| L3 | 4+ slices for migrations, broad refactors, investigations, or batch fixes |
+| L2 | Minimum 2 file-owned subagents for cross-module work, usually code plus tests/docs |
+| L3 | Minimum 4 file-owned subagents for migrations, broad refactors, investigations, or batch fixes |
+
+If an L2/L3 task cannot create the required subagents, the goal should pause. The main session must not continue as the substitute executor.
 
 ### Install
 
@@ -95,6 +97,12 @@ Verify Codex loads the config:
 
 ```powershell
 codex --strict-config doctor --summary --ascii
+```
+
+On Windows, if `codex` is blocked by PowerShell execution policy or shim handling, run:
+
+```powershell
+codex.cmd --strict-config doctor --summary --ascii
 ```
 
 Confirm `Configuration` / `config` is `loaded`, then restart Codex.
@@ -195,8 +203,10 @@ full-spec 目标默认包含这些契约：
 | --- | --- |
 | L0 | 单文件小修、简单解释、简单命令、文案微调 |
 | L1 | 一个子代理做隔离阅读、局部验证或风险检查 |
-| L2 | 2-3 个文件边界清楚的切片并行，通常是代码 + 测试/文档 |
-| L3 | 4 个以上切片，用于迁移、大重构、大范围排查或批量修复 |
+| L2 | 最少 2 个文件边界清楚的子代理，用于跨模块任务，通常是代码 + 测试/文档 |
+| L3 | 最少 4 个文件边界清楚的子代理，用于迁移、大重构、大范围排查或批量修复 |
+
+如果 L2/L3 任务无法创建足额子代理，goal 应该暂停。不得由主会话继续代替执行。
 
 ### 安装
 
@@ -220,6 +230,12 @@ max_depth = 2147483647
 
 ```powershell
 codex --strict-config doctor --summary --ascii
+```
+
+Windows 下如果 `codex` 被 PowerShell 执行策略或 shim 拦截，运行：
+
+```powershell
+codex.cmd --strict-config doctor --summary --ascii
 ```
 
 确认 `Configuration` / `config` 是 `loaded`，然后重启 Codex。

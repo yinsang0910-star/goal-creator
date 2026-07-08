@@ -109,9 +109,12 @@ CAPACITY_TERMS = [
     "max_threads = 2147483647",
     "max_depth = 2147483647",
     "codex --strict-config doctor --summary --ascii",
+    "codex.cmd --strict-config doctor --summary --ascii",
     "loaded",
 ]
 DISPATCH_LEVEL_TERMS = ["L0", "L1", "L2", "L3"]
+DISPATCH_HARD_TERMS_EN = ["minimum 2", "minimum 4", "pause", "must not continue"]
+DISPATCH_HARD_TERMS_ZH = ["最少 2", "最少 4", "暂停", "不得由主会话继续"]
 LIBERATION_TERMS_EN = ["scheduler", "merge", "final verification", "delegate"]
 LIBERATION_TERMS_ZH = ["调度", "合并", "最终验证", "下放"]
 
@@ -351,7 +354,7 @@ def lint_capacity_prerequisite(body: str, source: str) -> list[str]:
     return errors
 
 
-def lint_dispatch_decision(body: str, source: str) -> list[str]:
+def lint_dispatch_decision(body: str, source: str, zh: bool) -> list[str]:
     errors: list[str] = []
     section = section_body(body, ["子代理派发决策", "Subagent Dispatch Decision"])
     if not section:
@@ -360,6 +363,10 @@ def lint_dispatch_decision(body: str, source: str) -> list[str]:
     for term in DISPATCH_LEVEL_TERMS:
         if term not in section:
             errors.append(f"{source}: subagent dispatch decision missing `{term}`")
+    hard_terms = DISPATCH_HARD_TERMS_ZH if zh else DISPATCH_HARD_TERMS_EN
+    for term in hard_terms:
+        if term.lower() not in section.lower():
+            errors.append(f"{source}: subagent dispatch decision missing hard rule `{term}`")
     return errors
 
 
@@ -392,7 +399,7 @@ def lint_text(text: str, source: str) -> list[str]:
     if mode == "full-spec" or not mode:
         errors.extend(lint_codex_contract(body, sections, source, zh))
         errors.extend(lint_capacity_prerequisite(body, source))
-        errors.extend(lint_dispatch_decision(body, source))
+        errors.extend(lint_dispatch_decision(body, source, zh))
         errors.extend(lint_liberation(body, source, zh))
         for section in multi_agent:
             if section not in sections:
@@ -438,6 +445,7 @@ def lint_text(text: str, source: str) -> list[str]:
             "max_threads = 2147483647",
             "max_depth = 2147483647",
             "codex --strict-config doctor --summary --ascii",
+            "codex.cmd --strict-config doctor --summary --ascii",
             "loaded",
         ]:
             if required_text not in body:

@@ -78,15 +78,17 @@ BODY = """# 冒烟目标
 - 如果没有 `[agents]` 段，追加该段；如果已有，只更新 `max_threads = 2147483647` 和 `max_depth = 2147483647`。
 - 不要删除或重排现有配置。
 - 修改后运行 `codex --strict-config doctor --summary --ascii`。
+- Windows 下如果 `codex` 被 PowerShell 执行策略或 shim 拦截，运行 `codex.cmd --strict-config doctor --summary --ascii`。
 - 只有输出显示 `Configuration` / `config` 为 `loaded`，才继续执行需要子代理释放的任务。
 
 ## 子代理派发决策
 
 - L0: 不派发，适用于单文件小修、简单解释、简单命令。
 - L1: 一个子代理，适用于隔离阅读、局部验证或风险检查。
-- L2: 2-3 个子代理，适用于跨模块或代码与测试可并行。
-- L3: 4 个以上子代理，适用于多模块迁移、重构、排查或批量修复。
+- L2: 最少 2 个子代理，适用于跨模块或代码与测试可并行。
+- L3: 最少 4 个子代理，适用于多模块迁移、重构、排查或批量修复。
 - 简单任务必须保持 L0，禁止为了形式派发无效子代理。
+- 如果选择 L2/L3 但当前会话无法创建足额子代理，必须暂停，不得由主会话继续代替执行。
 
 ## 子代理执行力释放
 
@@ -245,8 +247,12 @@ def main() -> int:
         assert "max_threads = 2147483647" in text
         assert "max_depth = 2147483647" in text
         assert "codex --strict-config doctor --summary --ascii" in text
+        assert "codex.cmd --strict-config doctor --summary --ascii" in text
         assert "loaded" in text
         assert "## 子代理派发决策" in text
+        assert "最少 2" in text
+        assert "最少 4" in text
+        assert "不得由主会话继续" in text
         assert "L0" in text and "L1" in text and "L2" in text and "L3" in text
         assert "## 子代理执行力释放" in text
         assert "调度" in text
@@ -300,7 +306,7 @@ def main() -> int:
         missing_capacity = tmp / "missing-capacity.md"
         missing_capacity.write_text(
             text.replace(
-                "## 子代理容量前置\n\n- 使用 full-spec / subagent-first 目标前，先检查当前用户的 `~/.codex/config.toml`。\n- 如果没有 `[agents]` 段，追加该段；如果已有，只更新 `max_threads = 2147483647` 和 `max_depth = 2147483647`。\n- 不要删除或重排现有配置。\n- 修改后运行 `codex --strict-config doctor --summary --ascii`。\n- 只有输出显示 `Configuration` / `config` 为 `loaded`，才继续执行需要子代理释放的任务。\n\n",
+                "## 子代理容量前置\n\n- 使用 full-spec / subagent-first 目标前，先检查当前用户的 `~/.codex/config.toml`。\n- 如果没有 `[agents]` 段，追加该段；如果已有，只更新 `max_threads = 2147483647` 和 `max_depth = 2147483647`。\n- 不要删除或重排现有配置。\n- 修改后运行 `codex --strict-config doctor --summary --ascii`。\n- Windows 下如果 `codex` 被 PowerShell 执行策略或 shim 拦截，运行 `codex.cmd --strict-config doctor --summary --ascii`。\n- 只有输出显示 `Configuration` / `config` 为 `loaded`，才继续执行需要子代理释放的任务。\n\n",
                 "",
             ),
             encoding="utf-8",
@@ -312,7 +318,7 @@ def main() -> int:
         missing_dispatch_decision = tmp / "missing-dispatch-decision.md"
         missing_dispatch_decision.write_text(
             text.replace(
-                "## 子代理派发决策\n\n- L0: 不派发，适用于单文件小修、简单解释、简单命令。\n- L1: 一个子代理，适用于隔离阅读、局部验证或风险检查。\n- L2: 2-3 个子代理，适用于跨模块或代码与测试可并行。\n- L3: 4 个以上子代理，适用于多模块迁移、重构、排查或批量修复。\n- 简单任务必须保持 L0，禁止为了形式派发无效子代理。\n\n",
+                "## 子代理派发决策\n\n- L0: 不派发，适用于单文件小修、简单解释、简单命令。\n- L1: 一个子代理，适用于隔离阅读、局部验证或风险检查。\n- L2: 最少 2 个子代理，适用于跨模块或代码与测试可并行。\n- L3: 最少 4 个子代理，适用于多模块迁移、重构、排查或批量修复。\n- 简单任务必须保持 L0，禁止为了形式派发无效子代理。\n- 如果选择 L2/L3 但当前会话无法创建足额子代理，必须暂停，不得由主会话继续代替执行。\n\n",
                 "",
             ),
             encoding="utf-8",
@@ -394,6 +400,10 @@ def main() -> int:
         assert "~/.codex/config.toml" in skill_text
         assert "max_threads = 2147483647" in skill_text
         assert "codex --strict-config doctor --summary --ascii" in skill_text
+        assert "codex.cmd --strict-config doctor --summary --ascii" in skill_text
+        assert "minimum 2 subagents" in skill_text
+        assert "minimum 4 subagents" in skill_text
+        assert "must not continue as the substitute executor" in skill_text
         assert "lint_goal_file.py" in skill_text
         assert "install_local.py" in skill_text
         assert "check_eval_cases.py" in skill_text
