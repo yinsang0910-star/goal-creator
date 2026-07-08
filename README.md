@@ -128,7 +128,7 @@ Use goal-creator to create and save a goal for configuring Codex subagent concur
 Run a saved goal later:
 
 ```text
-/goal Read `.goals/<file>.md`; execute only that file.
+/goal Execute only `.goals/<file>.md`.
 ```
 
 Full-spec goals include forced subagent dispatch by default. The executing main session must define a `Dispatch Matrix`, keep shared files under `Shared File Ownership`, consume each fixed `Subagent Result`, merge serially, and run final project-level verification.
@@ -144,7 +144,7 @@ python scripts\lint_goal_file.py .goals\<file>.md
 ```text
 Saved: .goals/2026-06-20-refactor-backtest-module.md
 
-/goal Read `.goals/2026-06-20-refactor-backtest-module.md`; execute only that file.
+/goal Execute only `.goals/2026-06-20-refactor-backtest-module.md`.
 ```
 
 The saved file contains the original request, non-negotiables, full objective, success criteria, scope, execution plan, verification, safety constraints, stop condition, and pause condition.
@@ -249,7 +249,7 @@ python scripts\install_local.py
 之后执行已保存的目标：
 
 ```text
-/goal 读取 `.goals/<file>.md`；只执行该文件。
+/goal 只执行 `.goals/<file>.md`
 ```
 
 full-spec 目标默认包含强制子代理派发协议。未来执行的主会话必须先写出派发表，明确共享文件归属，消费每个固定格式的子代理结果，串行合并，并运行最终项目级验证。
@@ -265,7 +265,7 @@ python scripts\lint_goal_file.py .goals\<file>.md
 ```text
 Saved: .goals/2026-06-20-refactor-backtest-module.md
 
-/goal Read `.goals/2026-06-20-refactor-backtest-module.md`; execute only that file.
+/goal Execute only `.goals/2026-06-20-refactor-backtest-module.md`.
 ```
 
 原始需求、不可降级项、完整目标、成功标准、范围、执行计划、验证方式、安全约束、停止条件和暂停条件都保存在目标文件里。

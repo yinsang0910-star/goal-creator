@@ -14,7 +14,7 @@ formats:
 ## Short Command
 
 ```text
-/goal Read `.goals/2026-06-20-goal-creator-v0-2.md`; execute only that file.
+/goal Execute only `.goals/2026-06-20-goal-creator-v0-2.md`.
 ```
 
 ## Objective

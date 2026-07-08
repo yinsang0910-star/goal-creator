@@ -24,7 +24,7 @@ BODY = """# 冒烟目标
 ## 短启动命令
 
 ```text
-/goal 读取 `.goals/example.md`；只执行该文件。
+/goal 只执行 `.goals/example.md`
 ```
 
 ## 目标
@@ -196,7 +196,7 @@ def main() -> int:
         assert "mode: full-spec" in text
         assert "formats:\n  - codex" in text
         assert "## 短启动命令" in text
-        assert "/goal 读取 `.goals/example.md`；只执行该文件。" in text
+        assert "/goal 只执行 `.goals/example.md`" in text
         assert "## 原始需求" in text
         assert "## 不可降级项" in text
         assert "## 验证" in text

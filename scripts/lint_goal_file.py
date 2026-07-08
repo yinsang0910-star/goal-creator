@@ -326,7 +326,7 @@ def lint_text(text: str, source: str) -> list[str]:
             errors.append(f"{source}: launcher exceeds 140 chars")
         if "`.goals/" not in line:
             errors.append(f"{source}: launcher should point to `.goals/<file>.md`")
-        if "execute only" not in line and "只执行" not in line:
+        if "execute only" not in line.lower() and "只执行" not in line:
             errors.append(f"{source}: launcher should say to execute only the saved file")
 
     for pattern in PLACEHOLDERS:

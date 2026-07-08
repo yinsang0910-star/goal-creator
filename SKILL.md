@@ -60,13 +60,13 @@ Codex launcher examples:
 English:
 
 ```text
-/goal Read `.goals/<file>.md`; execute only that file.
+/goal Execute only `.goals/<file>.md`.
 ```
 
 Chinese:
 
 ```text
-/goal 读取 `.goals/<file>.md`；只执行该文件。
+/goal 只执行 `.goals/<file>.md`
 ```
 
 Saved file structure (English example; translate all visible labels for non-English goals):
@@ -88,7 +88,7 @@ formats:
 ## Short Command
 
 ```text
-/goal Read `.goals/<file>.md`; execute only that file.
+/goal Execute only `.goals/<file>.md`.
 ```
 
 ## Objective
@@ -402,7 +402,7 @@ Pause:
 Full-spec launcher:
 
 ```text
-/goal Read `.goals/<file>.md`; execute only that file.
+/goal Execute only `.goals/<file>.md`.
 ```
 
 ### claude
