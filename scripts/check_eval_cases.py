@@ -34,7 +34,7 @@ def main() -> int:
             errors.append(f"{label}: must_include is empty")
         if case["language"] == "zh" and any(item.startswith("## ") and item.isascii() for item in case["must_include"]):
             errors.append(f"{label}: zh must_include should not require English headings")
-        if "subagent" in case["name"] or "capacity" in case["name"]:
+        if "capacity" in case["name"]:
             for token in ["~/.codex/config.toml", "max_threads = 2147483647", "codex --strict-config doctor --summary --ascii"]:
                 if token not in case["must_include"]:
                     errors.append(f"{label}: missing config token {token}")

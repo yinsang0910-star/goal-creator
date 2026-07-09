@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "save_goal.py"
 LINT = ROOT / "scripts" / "lint_goal_file.py"
 INSTALL = ROOT / "scripts" / "install_local.py"
+ENSURE_CAPACITY = ROOT / "scripts" / "ensure_codex_capacity.py"
 CHECK_EVALS = ROOT / "scripts" / "check_eval_cases.py"
 SKILL = ROOT / "SKILL.md"
 EVALS = ROOT / "examples" / "evals" / "cases.json"
@@ -71,15 +72,6 @@ BODY = """# 冒烟目标
 - 可恢复产物: 本文件 `.goals/example.md`。
 - 收尾检查: `git status --short`、`git diff --check`、`python scripts/smoke_test.py`。
 - 聊天输出: 只报告保存路径、启动入口、验证结果和必要风险。
-
-## 子代理容量前置
-
-- 使用 full-spec / subagent-first 目标前，先检查当前用户的 `~/.codex/config.toml`。
-- 如果没有 `[agents]` 段，追加该段；如果已有，只更新 `max_threads = 2147483647` 和 `max_depth = 2147483647`。
-- 不要删除或重排现有配置。
-- 修改后运行 `codex --strict-config doctor --summary --ascii`。
-- Windows 下如果 `codex` 被 PowerShell 执行策略或 shim 拦截，运行 `codex.cmd --strict-config doctor --summary --ascii`。
-- 只有输出显示 `Configuration` / `config` 为 `loaded`，才继续执行需要子代理释放的任务。
 
 ## 子代理派发决策
 
@@ -217,6 +209,16 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory() as raw:
         tmp = Path(raw)
+        config = tmp / "config.toml"
+        marker = tmp / "capacity.ok"
+        config.write_text("[agents]\nmax_threads = 1\n", encoding="utf-8")
+        ensured = run_script(ENSURE_CAPACITY, "--config", str(config), "--marker", str(marker), "--skip-doctor")
+        assert "capacity ok" in ensured.stdout
+        config_text = config.read_text(encoding="utf-8")
+        assert "max_threads = 2147483647" in config_text
+        assert "max_depth = 2147483647" in config_text
+        assert marker.exists()
+
         first = run_save(tmp, "创建目标")
         second = run_save(tmp, "创建目标")
 
@@ -242,13 +244,7 @@ def main() -> int:
         assert ".goals/example.md" in text
         assert "git status --short" in text
         assert "git diff --check" in text
-        assert "## 子代理容量前置" in text
-        assert "~/.codex/config.toml" in text
-        assert "max_threads = 2147483647" in text
-        assert "max_depth = 2147483647" in text
-        assert "codex --strict-config doctor --summary --ascii" in text
-        assert "codex.cmd --strict-config doctor --summary --ascii" in text
-        assert "loaded" in text
+        assert "## 子代理容量前置" not in text
         assert "## 子代理派发决策" in text
         assert "最少 2" in text
         assert "最少 4" in text
@@ -303,17 +299,11 @@ def main() -> int:
         assert failed.returncode == 1
         assert "missing full-spec Codex section" in failed.stderr
 
-        missing_capacity = tmp / "missing-capacity.md"
-        missing_capacity.write_text(
-            text.replace(
-                "## 子代理容量前置\n\n- 使用 full-spec / subagent-first 目标前，先检查当前用户的 `~/.codex/config.toml`。\n- 如果没有 `[agents]` 段，追加该段；如果已有，只更新 `max_threads = 2147483647` 和 `max_depth = 2147483647`。\n- 不要删除或重排现有配置。\n- 修改后运行 `codex --strict-config doctor --summary --ascii`。\n- Windows 下如果 `codex` 被 PowerShell 执行策略或 shim 拦截，运行 `codex.cmd --strict-config doctor --summary --ascii`。\n- 只有输出显示 `Configuration` / `config` 为 `loaded`，才继续执行需要子代理释放的任务。\n\n",
-                "",
-            ),
-            encoding="utf-8",
-        )
-        failed = run_lint(missing_capacity, check=False)
+        repeated_capacity = tmp / "repeated-capacity.md"
+        repeated_capacity.write_text(text.replace("## 子代理派发决策", "## 子代理容量前置\n\n- 不应出现在每个 goal 中。\n\n## 子代理派发决策"), encoding="utf-8")
+        failed = run_lint(repeated_capacity, check=False)
         assert failed.returncode == 1
-        assert "missing full-spec multi-agent section `子代理容量前置`" in failed.stderr
+        assert "capacity prerequisite belongs to one-time skill setup" in failed.stderr
 
         missing_dispatch_decision = tmp / "missing-dispatch-decision.md"
         missing_dispatch_decision.write_text(
@@ -380,10 +370,8 @@ def main() -> int:
         assert "saved goal is the higher-level contract" in skill_text
         assert "Codex Execution Contract" in skill_text
         assert "`Codex Execution Contract` -> `Codex 执行契约`" in skill_text
-        assert "Subagent Capacity Prerequisite" in skill_text
         assert "Subagent Dispatch Decision" in skill_text
         assert "Subagent Execution Liberation" in skill_text
-        assert "`Subagent Capacity Prerequisite` -> `子代理容量前置`" in skill_text
         assert "`Subagent Dispatch Decision` -> `子代理派发决策`" in skill_text
         assert "`Subagent Execution Liberation` -> `子代理执行力释放`" in skill_text
         assert "L0" in skill_text and "L1" in skill_text and "L2" in skill_text and "L3" in skill_text
@@ -403,6 +391,7 @@ def main() -> int:
         assert "Do not bypass completed subagent work" in skill_text
         assert "Reject or return a subagent result" in skill_text
         assert "Codex subagent capacity setup" in skill_text
+        assert "scripts/ensure_codex_capacity.py" in skill_text
         assert "~/.codex/config.toml" in skill_text
         assert "max_threads = 2147483647" in skill_text
         assert "codex --strict-config doctor --summary --ascii" in skill_text

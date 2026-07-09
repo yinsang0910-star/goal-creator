@@ -77,7 +77,6 @@ ZH_REQUIRED = [
 ]
 
 MULTI_AGENT_EN = [
-    "Subagent Capacity Prerequisite",
     "Subagent Dispatch Decision",
     "Subagent Execution Liberation",
     "Multi-Agent Collaboration",
@@ -89,7 +88,6 @@ MULTI_AGENT_EN = [
 ]
 
 MULTI_AGENT_ZH = [
-    "子代理容量前置",
     "子代理派发决策",
     "子代理执行力释放",
     "多代理协同",
@@ -103,15 +101,6 @@ MULTI_AGENT_ZH = [
 CODEX_SECTION_EN = "Codex Execution Contract"
 CODEX_SECTION_ZH = "Codex 执行契约"
 CODEX_CONTRACT_TERMS = ["AGENTS.md", ".goals/", "git status --short", "git diff --check"]
-CAPACITY_TERMS = [
-    "~/.codex/config.toml",
-    "[agents]",
-    "max_threads = 2147483647",
-    "max_depth = 2147483647",
-    "codex --strict-config doctor --summary --ascii",
-    "codex.cmd --strict-config doctor --summary --ascii",
-    "loaded",
-]
 DISPATCH_LEVEL_TERMS = ["L0", "L1", "L2", "L3"]
 DISPATCH_HARD_TERMS_EN = ["minimum 2", "minimum 4", "pause", "must not continue"]
 DISPATCH_HARD_TERMS_ZH = ["最少 2", "最少 4", "暂停", "不得由主会话继续"]
@@ -355,18 +344,9 @@ def lint_codex_contract(body: str, sections: set[str], source: str, zh: bool) ->
     return errors
 
 
-def lint_capacity_prerequisite(body: str, source: str) -> list[str]:
-    errors: list[str] = []
-    section = section_body(body, ["子代理容量前置", "Subagent Capacity Prerequisite"])
-    if not section:
-        errors.append(f"{source}: missing subagent capacity prerequisite body")
-        return errors
-    for term in CAPACITY_TERMS:
-        if term not in section:
-            errors.append(f"{source}: subagent capacity prerequisite missing `{term}`")
-    if not has_no_reorder_rule(section):
-        errors.append(f"{source}: subagent capacity prerequisite missing no-delete/no-reorder rule")
-    return errors
+def lint_no_repeated_capacity_prerequisite(sections: set[str], source: str) -> list[str]:
+    repeated = {"子代理容量前置", "Subagent Capacity Prerequisite"} & sections
+    return [f"{source}: capacity prerequisite belongs to one-time skill setup, not each saved goal"] if repeated else []
 
 
 def lint_dispatch_decision(body: str, source: str, zh: bool) -> list[str]:
@@ -413,7 +393,7 @@ def lint_text(text: str, source: str) -> list[str]:
     multi_agent = MULTI_AGENT_ZH if zh else MULTI_AGENT_EN
     if mode == "full-spec" or not mode:
         errors.extend(lint_codex_contract(body, sections, source, zh))
-        errors.extend(lint_capacity_prerequisite(body, source))
+        errors.extend(lint_no_repeated_capacity_prerequisite(sections, source))
         errors.extend(lint_dispatch_decision(body, source, zh))
         errors.extend(lint_liberation(body, source, zh))
         for section in multi_agent:

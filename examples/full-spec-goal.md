@@ -86,15 +86,6 @@ Forbidden:
 - Final checks: `git status --short`, `git diff --check`, and `python scripts/smoke_test.py`.
 - Chat output: report only saved path, launcher, verification result, and material risks.
 
-## Subagent Capacity Prerequisite
-
-- Before using full-spec / subagent-first goals, check the current user's `~/.codex/config.toml`.
-- If `[agents]` exists, update only `max_threads = 2147483647` and `max_depth = 2147483647`; if it does not exist, append it.
-- Do not delete or reorder existing config.
-- Run `codex --strict-config doctor --summary --ascii`.
-- On Windows, if `codex` is blocked by PowerShell execution policy or shim handling, run `codex.cmd --strict-config doctor --summary --ascii`.
-- Continue only after the output shows `Configuration` / `config` is `loaded`.
-
 ## Subagent Dispatch Decision
 
 - L0: no subagent. Use for single-file small edits, explanations, simple commands, and wording tweaks.

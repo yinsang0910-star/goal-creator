@@ -51,14 +51,13 @@ Long `/goal` prompts are hard to review, easy to truncate, and easy for future a
 - mixing English headings into Chinese goals
 - using subagents only for summaries instead of real execution
 - making every task multi-agent even when L0 single-agent work is enough
-- forgetting Codex subagent capacity configuration before relying on parallel work
+- forgetting one-time Codex subagent capacity setup before relying on parallel work
 
 ### Codex-Native Model
 
 Full-spec goals include these contracts by default:
 
 - **Codex Execution Contract**: project root, `AGENTS.md`, `.goals/*.md`, `git status --short`, `git diff --check`, and project verification
-- **Subagent Capacity Prerequisite**: required `~/.codex/config.toml` `[agents]` setup before subagent-first work
 - **Subagent Dispatch Decision**: L0/L1/L2/L3 precision so simple work stays simple and complex work gets real parallelism
 - **Subagent Execution Liberation**: main agent schedules, merges, handles boundaries, and verifies; subagents execute isolated work
 - **Dispatch Matrix**: file-owned slices with allowed files, forbidden files, verification, dependencies, and merge owner
@@ -83,7 +82,13 @@ cd .\goal-creator
 python scripts\install_local.py
 ```
 
-Configure Codex subagent capacity in `~/.codex/config.toml` before relying on full-spec subagent-first goals:
+Run the one-time Codex capacity setup before the first full-spec / subagent-first goal:
+
+```powershell
+python scripts\ensure_codex_capacity.py
+```
+
+The script updates `~/.codex/config.toml` only if `[agents]` is missing or wrong:
 
 ```toml
 [agents]
@@ -93,19 +98,7 @@ max_depth = 2147483647
 
 If `[agents]` already exists, update only those fields. Do not delete or reorder existing config.
 
-Verify Codex loads the config:
-
-```powershell
-codex --strict-config doctor --summary --ascii
-```
-
-On Windows, if `codex` is blocked by PowerShell execution policy or shim handling, run:
-
-```powershell
-codex.cmd --strict-config doctor --summary --ascii
-```
-
-Confirm `Configuration` / `config` is `loaded`, then restart Codex.
+It writes `~/.codex/goal-creator-capacity.ok`. Later goals should not repeat this setup unless the marker is missing, config changes, or you ask to recheck. Use `python scripts\ensure_codex_capacity.py --doctor` only when you want strict Codex doctor verification.
 
 ### Use
 
@@ -184,14 +177,13 @@ python scripts\lint_goal_file.py .goals\<file>.md
 - 中文目标里混入英文标题和字段
 - 子代理只做摘要，不做真正可合并的执行工作
 - 简单任务也强行派一堆无效子代理
-- 依赖子代理并发前，没有先配置 Codex 的 agents 容量
+- 依赖子代理并发前，没有先做一次性 Codex agents 容量设置
 
 ### Codex 原生执行模型
 
 full-spec 目标默认包含这些契约：
 
 - **Codex 执行契约**：项目根目录、`AGENTS.md`、`.goals/*.md`、`git status --short`、`git diff --check`、项目级验证
-- **子代理容量前置**：使用 subagent-first 前必须配置 `~/.codex/config.toml` 的 `[agents]`
 - **子代理派发决策**：用 L0/L1/L2/L3 精准判断，简单任务保持简单，复杂任务释放并行能力
 - **子代理执行力释放**：主 agent 负责调度、合并、边界和最终验证；子代理负责隔离执行
 - **派发表**：按文件所有权拆分切片，明确允许文件、禁止文件、验证命令、依赖和合并负责人
@@ -216,7 +208,13 @@ cd .\goal-creator
 python scripts\install_local.py
 ```
 
-依赖 full-spec / subagent-first 目标前，先配置 `~/.codex/config.toml`：
+第一次使用 full-spec / subagent-first 目标前，先运行一次容量设置：
+
+```powershell
+python scripts\ensure_codex_capacity.py
+```
+
+这个脚本只会在 `[agents]` 缺失或数值不正确时更新 `~/.codex/config.toml`：
 
 ```toml
 [agents]
@@ -226,19 +224,7 @@ max_depth = 2147483647
 
 如果已经有 `[agents]` 段，只更新这两个字段。不要删除或重排现有配置。
 
-验证 Codex 能加载配置：
-
-```powershell
-codex --strict-config doctor --summary --ascii
-```
-
-Windows 下如果 `codex` 被 PowerShell 执行策略或 shim 拦截，运行：
-
-```powershell
-codex.cmd --strict-config doctor --summary --ascii
-```
-
-确认 `Configuration` / `config` 是 `loaded`，然后重启 Codex。
+它会写入 `~/.codex/goal-creator-capacity.ok`。之后生成 goal 不应重复出现容量检查，除非 marker 缺失、配置变化，或者你主动要求重查。只有在你需要严格 doctor 验证时，才运行 `python scripts\ensure_codex_capacity.py --doctor`。
 
 ### 使用
 

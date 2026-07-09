@@ -19,12 +19,22 @@ Turn a user's task into a short manual launcher plus a complete goal spec saved 
 - If the user asks for all/mainstream formats, include: `codex`, `claude`, `gemini`, `cursor`, `github`, `markdown`.
 - Use `compact` when the user asks for a short inline goal, direct copyable `/goal`, or a trivial task.
 - Use `review` when the user asks to inspect, audit, compare, improve, lint, or fix an existing goal.
-- Full-spec goals default to subagent-first execution: include capacity prerequisite, dispatch-level decision, execution liberation, and file-owned dispatch contracts.
-- Codex subagent capacity setup is a required prerequisite for using this skill's full-spec / subagent-first mode, not an optional extra.
+- Full-spec goals default to subagent-first execution: include dispatch-level decision, execution liberation, and file-owned dispatch contracts.
+- Codex subagent capacity setup is a one-time skill setup. Run `scripts/ensure_codex_capacity.py` only when the marker is missing, config is wrong, or the user asks to recheck; do not repeat it inside every saved goal.
 - Keep the chat command under 140 characters when possible. Put all detail in the saved goal file.
 - Creation is manual by default: output and save the goal, but do not start the work described by the goal.
 - Ask at most one question only when the missing answer changes risk, ownership, cost, or write location.
 - Codex-first means the saved file is the execution artifact: Do not paste the saved goal body back into chat.
+
+## One-Time Capacity Setup
+
+Before the first full-spec / subagent-first goal for the current user profile, run this skill-local script once:
+
+```bash
+python scripts/ensure_codex_capacity.py
+```
+
+It updates `~/.codex/config.toml` only if `[agents]` is missing or wrong and writes `~/.codex/goal-creator-capacity.ok`. Use `--doctor` only when the user asks for strict Codex doctor verification; skip this setup when the marker exists and config already has the correct `[agents]` values.
 
 ## Trigger Examples
 
@@ -140,15 +150,6 @@ Forbidden:
 - Final checks: `git status --short`, `git diff --check`, and the smallest project-specific test or lint command.
 - Chat output: report only saved path, launcher, verification result, and material risks.
 
-## Subagent Capacity Prerequisite
-
-- Before using full-spec / subagent-first goals, check the current user's `~/.codex/config.toml`.
-- If `[agents]` exists, update only `max_threads = 2147483647` and `max_depth = 2147483647`; if it does not exist, append it.
-- Do not delete or reorder existing config.
-- Run `codex --strict-config doctor --summary --ascii`.
-- On Windows, if `codex` is blocked by PowerShell execution policy or shim handling, run `codex.cmd --strict-config doctor --summary --ascii`.
-- Continue only after the output shows `Configuration` / `config` is `loaded`.
-
 ## Subagent Dispatch Decision
 
 - L0: no subagent. Use for single-file small edits, explanations, simple commands, and wording tweaks.
@@ -237,7 +238,6 @@ Chinese label map:
 - `Safety / Constraints` -> `安全 / 约束`
 - `Iteration Policy` -> `迭代策略`
 - `Codex Execution Contract` -> `Codex 执行契约`
-- `Subagent Capacity Prerequisite` -> `子代理容量前置`
 - `Subagent Dispatch Decision` -> `子代理派发决策`
 - `Subagent Execution Liberation` -> `子代理执行力释放`
 - `Multi-Agent Collaboration` -> `多代理协同`
@@ -285,13 +285,11 @@ Quality bar before saving:
 - Stop is a concrete completion evidence, not "when done".
 - Pause names the first human or external blocker that should stop the agent.
 - Codex Execution Contract names the current working directory, applicable `AGENTS.md`, resumable `.goals/*.md` artifact, `git status --short`, `git diff --check`, and a project-specific verification command.
-- Subagent Capacity Prerequisite requires `~/.codex/config.toml`, `[agents]`, `max_threads = 2147483647`, `max_depth = 2147483647`, `codex --strict-config doctor --summary --ascii`, loaded config verification, and no delete/reorder rule.
-- Subagent Capacity Prerequisite includes `codex.cmd --strict-config doctor --summary --ascii` as the Windows fallback when `codex` is blocked by execution policy or shim handling.
 - Subagent Dispatch Decision chooses L0/L1/L2/L3 from actual task shape, preserving L0 for simple work, requiring minimum 2 subagents for L2, minimum 4 subagents for L3, and pausing instead of letting the main session replace missing subagents.
 - Subagent Execution Liberation states that the main session is scheduler, merger, boundary judge, and final verification owner while delegating isolated executable work.
 - Do not silently reduce scope. If constraints require a smaller first step, keep the full request in `Original Request`, put the reduction in `Pause` or assumptions needing confirmation, and do not present the reduced scope as the final goal.
 - When used with planning, TDD, verification, or superpowers workflows, the saved goal is the higher-level contract: later skills may decompose execution, but must not weaken `Objective`, `Non-Negotiables`, `Success Criteria`, or `Verification`.
-- Full-spec goals include `Subagent Capacity Prerequisite`, `Subagent Dispatch Decision`, `Subagent Execution Liberation`, `Multi-Agent Collaboration`, `Dispatch Matrix`, `Shared File Ownership`, `Subagent Result`, `Merge Policy`, and `Rejection Conditions` by default.
+- Full-spec goals include `Subagent Dispatch Decision`, `Subagent Execution Liberation`, `Multi-Agent Collaboration`, `Dispatch Matrix`, `Shared File Ownership`, `Subagent Result`, `Merge Policy`, and `Rejection Conditions` by default.
 - The dispatch protocol uses L0/L1/L2/L3 precision: simple work stays L0, complex work delegates real file-owned slices, and unsplittable work goes in `Pause` instead of inventing fake parallel work.
 - Subagents must not be used only for simple reading, summarizing, searching, formatting, or one tiny function.
 
@@ -311,15 +309,6 @@ Include these sections in the saved full-spec goal:
 - Resumable artifact: this `.goals/<file>.md`.
 - Final checks: `git status --short`, `git diff --check`, and the smallest project-specific test or lint command.
 - Chat output: report only saved path, launcher, verification result, and material risks.
-
-## Subagent Capacity Prerequisite
-
-- Before using full-spec / subagent-first goals, check the current user's `~/.codex/config.toml`.
-- If `[agents]` exists, update only `max_threads = 2147483647` and `max_depth = 2147483647`; if it does not exist, append it.
-- Do not delete or reorder existing config.
-- Run `codex --strict-config doctor --summary --ascii`.
-- On Windows, if `codex` is blocked by PowerShell execution policy or shim handling, run `codex.cmd --strict-config doctor --summary --ascii`.
-- Continue only after the output shows `Configuration` / `config` is `loaded`.
 
 ## Subagent Dispatch Decision
 
@@ -394,7 +383,7 @@ Reject or return a subagent result if it:
 
 ### Codex subagent capacity setup
 
-This is a required setup step before relying on full-spec / subagent-first goals. Keep it in the saved full-spec contract as a prerequisite, and create a standalone setup goal when the user asks to configure Codex subagents, raise limits, tune concurrency, or prepare another machine.
+This is a one-time skill setup step before relying on full-spec / subagent-first goals. Do not include it in every saved goal. Run `scripts/ensure_codex_capacity.py` when the marker is missing, config is wrong, or the user asks to configure Codex subagents, raise limits, tune concurrency, or prepare another machine. Use `scripts/ensure_codex_capacity.py --doctor` only when strict doctor verification is requested.
 
 The saved goal must require:
 
