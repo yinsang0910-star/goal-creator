@@ -162,6 +162,26 @@ def run_save(tmp: Path, title: str) -> Path:
     return tmp / proc.stdout.strip()
 
 
+def run_save_body(tmp: Path, title: str, body: str, *, check: bool = True) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--title",
+            title,
+            "--mode",
+            "full-spec",
+            "--format",
+            "codex",
+        ],
+        input=body,
+        text=True,
+        cwd=tmp,
+        capture_output=True,
+        check=check,
+    )
+
+
 def run_lint(path: Path, *, check: bool = True) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [sys.executable, str(LINT), str(path)],
@@ -205,6 +225,9 @@ def main() -> int:
     assert OPENAI_YAML.exists()
     assert "Goal Creator" in OPENAI_YAML.read_text(encoding="utf-8")
     assert "Usage: install_local.py" in run_script(INSTALL, "--help").stdout
+    install_text = INSTALL.read_text(encoding="utf-8")
+    assert '"README.md"' not in install_text
+    assert '"assets"' not in install_text
     assert "eval cases ok" in run_script(CHECK_EVALS).stdout
 
     with tempfile.TemporaryDirectory() as raw:
@@ -218,6 +241,16 @@ def main() -> int:
         assert "max_threads = 2147483647" in config_text
         assert "max_depth = 2147483647" in config_text
         assert marker.exists()
+
+        incomplete = run_save_body(
+            tmp,
+            "incomplete full spec",
+            "# Goal\n\n```text\n/goal Execute only `.goals/bad.md`.\n```\n",
+            check=False,
+        )
+        assert incomplete.returncode == 1
+        assert "missing section" in incomplete.stderr
+        assert not list((tmp / ".goals").glob("*incomplete-full-spec*.md"))
 
         first = run_save(tmp, "创建目标")
         second = run_save(tmp, "创建目标")
@@ -399,6 +432,7 @@ def main() -> int:
         assert "minimum 2 subagents" in skill_text
         assert "minimum 4 subagents" in skill_text
         assert "must not continue as the substitute executor" in skill_text
+        assert "must fail instead of saving an incomplete goal" in skill_text
         assert "lint_goal_file.py" in skill_text
         assert "install_local.py" in skill_text
         assert "check_eval_cases.py" in skill_text

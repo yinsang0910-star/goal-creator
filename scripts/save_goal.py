@@ -42,6 +42,14 @@ def read_body(args: argparse.Namespace) -> str:
     return sys.stdin.read().strip()
 
 
+def lint_full_spec(content: str, source: str) -> list[str]:
+    try:
+        from lint_goal_file import lint_text
+    except ImportError as exc:
+        return [f"{source}: cannot validate full-spec goal: {exc}"]
+    return lint_text(content, source)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Save a goal markdown file.")
     parser.add_argument("--title", required=True, help="Goal title.")
@@ -58,10 +66,8 @@ def main() -> int:
         print("error: goal body is empty", file=sys.stderr)
         return 2
 
-    out_dir = Path(args.dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-
     today = date.today().isoformat()
+    out_dir = Path(args.dir)
     stem = f"{today}-{slugify(args.title)}"
     path = unique_path(out_dir, stem)
     formats = args.formats or ["codex", "markdown"]
@@ -80,6 +86,14 @@ def main() -> int:
         "---\n\n"
         f"{body}\n"
     )
+    if args.mode == "full-spec":
+        errors = lint_full_spec(content, path.as_posix())
+        if errors:
+            for error in errors:
+                print(error, file=sys.stderr)
+            return 1
+
+    out_dir.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8", newline="\n")
     print(path.as_posix())
     return 0

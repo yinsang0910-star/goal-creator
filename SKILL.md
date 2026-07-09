@@ -568,11 +568,11 @@ python scripts/save_goal.py --title "<title>" --mode full-spec --format codex --
 
 Resolve `scripts/save_goal.py` relative to this `SKILL.md` file, but run it from the user's current project directory so `.goals/` is created in that project.
 
-The script writes to `.goals/YYYY-MM-DD-slug.md` in the current working directory. It creates `.goals/` if needed and avoids overwriting by appending `-2`, `-3`, etc.
+The script writes to `.goals/YYYY-MM-DD-slug.md` in the current working directory. It creates `.goals/` if needed and avoids overwriting by appending `-2`, `-3`, etc. For `full-spec`, it validates the complete contract before writing and must fail instead of saving an incomplete goal.
 
 If the script is unavailable, create the same file manually.
 
-After saving a full-spec goal, validate it with `scripts/lint_goal_file.py` when available:
+When manually creating or reviewing a full-spec goal, validate it with `scripts/lint_goal_file.py` when available:
 
 ```bash
 python scripts/lint_goal_file.py .goals/<file>.md

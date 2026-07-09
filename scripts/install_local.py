@@ -12,9 +12,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ITEMS = [
     "SKILL.md",
-    "README.md",
-    "LICENSE",
-    "assets",
     "examples",
     "scripts",
     "agents",
