@@ -1,80 +1,12 @@
-<p align="center">
-  <img src="assets/hero.svg" width="920" alt="goal-creator workflow">
-</p>
+# goal-creator
 
-<h1 align="center">goal-creator</h1>
+Creates copyable goals and, only when explicitly requested, resumable `.goals/*.md` contracts.
 
-<p align="center">
-  <strong>Short launcher. Deep contract. Subagent-first execution.</strong>
-  <br>
-  Codex-native goal compiler for turning vague work into strict, resumable, multi-agent execution contracts.
-</p>
+Ordinary requests stay compact and in chat. Unsaved full-spec stays inline and never points to a saved path. Full-spec is reserved for explicit requests or work whose risk/length needs a complete contract. Saving is never implicit.
 
-<p align="center">
-  <a href="#english">English</a> ·
-  <a href="#中文">中文</a>
-</p>
+Saved contracts use stable `goal:*` markers, remain subordinate to `AGENTS.md`, project authority docs, current code, and fresh runtime evidence, and never prescribe agent counts or global Codex configuration.
 
-<p align="center">
-  <code>codex</code>
-  <code>subagents</code>
-  <code>goals</code>
-  <code>skills</code>
-  <code>claude-code</code>
-  <code>gemini</code>
-  <code>cursor</code>
-  <code>windsurf</code>
-  <code>github-issues</code>
-</p>
-
----
-
-## English
-
-`goal-creator` turns a loose request into two things:
-
-```text
-/goal Execute only `.goals/<file>.md`.
-```
-
-and a saved `.goals/*.md` file that carries the real execution contract: original request, non-negotiables, success criteria, scope, verification, stop/pause conditions, Codex config prerequisites, and a subagent dispatch plan.
-
-It is built for Codex work where the main session should not burn context doing every detail itself. Full-spec goals make the main agent act as scheduler, merger, boundary judge, and final verifier, while subagents handle isolated, file-owned execution slices.
-
-### Why It Exists
-
-Long `/goal` prompts are hard to review, easy to truncate, and easy for future agents to weaken. A short launcher plus a saved contract is easier to resume, lint, commit, review, and execute.
-
-`goal-creator` is designed to prevent common agent failure modes:
-
-- shrinking the user's original request into a smaller MVP without saying so
-- mixing English headings into Chinese goals
-- using subagents only for summaries instead of real execution
-- making every task multi-agent even when L0 single-agent work is enough
-- forgetting one-time Codex subagent capacity setup before relying on parallel work
-
-### Codex-Native Model
-
-Full-spec goals include these contracts by default:
-
-- **Codex Execution Contract**: project root, `AGENTS.md`, `.goals/*.md`, `git status --short`, `git diff --check`, and project verification
-- **Subagent Dispatch Decision**: L0/L1/L2/L3 precision so simple work stays simple and complex work gets real parallelism
-- **Subagent Execution Liberation**: main agent schedules, merges, handles boundaries, and verifies; subagents execute isolated work
-- **Dispatch Matrix**: file-owned slices with allowed files, forbidden files, verification, dependencies, and merge owner
-- **Subagent Result**: structured handoff with changed files, verification result, boundary crossings, risks, and merge notes
-
-Dispatch levels:
-
-| Level | Use When |
-| --- | --- |
-| L0 | Single-file small edit, simple explanation, simple command, wording tweak |
-| L1 | One isolated reader/verifier/risk-review subagent is useful |
-| L2 | Minimum 2 file-owned subagents for cross-module work, usually code plus tests/docs |
-| L3 | Minimum 4 file-owned subagents for migrations, broad refactors, investigations, or batch fixes |
-
-If an L2/L3 task cannot create the required subagents, the goal should pause. The main session must not continue as the substitute executor.
-
-### Install
+## Install
 
 ```powershell
 git clone https://github.com/yinsang0910-star/goal-creator.git
@@ -82,199 +14,32 @@ cd .\goal-creator
 python scripts\install_local.py
 ```
 
-Run the one-time Codex capacity setup before the first full-spec / subagent-first goal:
+The installer validates the package, backs up only the existing `goal-creator` installation, and replaces only `~/.agents/skills/goal-creator`.
 
-```powershell
-python scripts\ensure_codex_capacity.py
-```
-
-The script updates `~/.codex/config.toml` only if `[agents]` is missing or wrong:
-
-```toml
-[agents]
-max_threads = 2147483647
-max_depth = 2147483647
-```
-
-If `[agents]` already exists, update only those fields. Do not delete or reorder existing config.
-
-It writes `~/.codex/goal-creator-capacity.ok`. Later goals should not repeat this setup unless the marker is missing, config changes, or you ask to recheck. Use `python scripts\ensure_codex_capacity.py --doctor` only when you want strict Codex doctor verification.
-
-### Use
-
-Create a normal full-spec goal:
+## Use
 
 ```text
-Use goal-creator to create and save a full-spec goal for refactoring the backtest module.
+Create a /goal for this README fix.
 ```
-
-Create a compact goal for trivial work:
 
 ```text
-Use goal-creator to create a compact goal for a README typo fix.
+Create and save a resumable full-spec goal for this production migration.
 ```
-
-Review an existing goal:
 
 ```text
-Use goal-creator to review this goal for weak acceptance criteria, missing verification, language mixing, and fake subagent dispatch.
+Review this goal for stale authority, weak verification, hidden writes, or forced agent orchestration.
 ```
 
-Run a saved goal later:
-
-```text
-/goal Execute only `.goals/<file>.md`.
-```
-
-### Output Shape
-
-Chat stays small:
-
-```text
-Saved: .goals/2026-06-20-refactor-backtest-module.md
-
-/goal Execute only `.goals/2026-06-20-refactor-backtest-module.md`.
-```
-
-The saved file carries the actual execution contract. That file is the artifact future agents should read, resume, lint, and execute.
-
-### Quality Checks
+## Check
 
 ```powershell
 python scripts\smoke_test.py
 python scripts\lint_goal_file.py examples\full-spec-goal.md
-python scripts\check_eval_cases.py
 git diff --check
 ```
-
-Use the linter on generated goals:
-
-```powershell
-python scripts\lint_goal_file.py .goals\<file>.md
-```
-
----
 
 ## 中文
 
-`goal-creator` 会把一句模糊需求变成两样东西：
+普通任务默认返回简短、可复制的目标文本；未保存的 full-spec 保持 inline，不能指向保存路径。只有用户明确要求保存、持久化、目标文件或可恢复契约时，才写入 `.goals/*.md`。full-spec 仅用于明确要求或确实需要完整风险契约的任务。
 
-```text
-/goal 只执行 `.goals/<file>.md`
-```
-
-以及一个保存到 `.goals/*.md` 的完整目标契约。真正的执行要求不塞进聊天框，而是放进目标文件：原始需求、不可降级项、成功标准、范围、验证方式、停止/暂停条件、Codex 配置前置、子代理派发计划。
-
-它不是普通的“帮你写 goal”。它的定位是 **Codex 原生任务编译器**：让主会话少消耗上下文，不再亲自做所有执行细节。full-spec 目标会让主 agent 退到调度、合并、边界裁决和最终验收的位置，把可隔离、可验证、可交付的执行工作下放给子代理。
-
-### 为什么需要它
-
-很长的 `/goal` 提示词难审查、容易截断，也容易被后续 agent 悄悄降级。短启动入口 + 保存的目标契约更适合恢复、检查、提交、审阅和执行。
-
-`goal-creator` 重点防这些问题：
-
-- 把用户原始需求偷偷缩小成 MVP
-- 中文目标里混入英文标题和字段
-- 子代理只做摘要，不做真正可合并的执行工作
-- 简单任务也强行派一堆无效子代理
-- 依赖子代理并发前，没有先做一次性 Codex agents 容量设置
-
-### Codex 原生执行模型
-
-full-spec 目标默认包含这些契约：
-
-- **Codex 执行契约**：项目根目录、`AGENTS.md`、`.goals/*.md`、`git status --short`、`git diff --check`、项目级验证
-- **子代理派发决策**：用 L0/L1/L2/L3 精准判断，简单任务保持简单，复杂任务释放并行能力
-- **子代理执行力释放**：主 agent 负责调度、合并、边界和最终验证；子代理负责隔离执行
-- **派发表**：按文件所有权拆分切片，明确允许文件、禁止文件、验证命令、依赖和合并负责人
-- **子代理结果**：固定交付格式，包含改动文件、验证结果、越界情况、风险和交接说明
-
-派发等级：
-
-| 等级 | 适用情况 |
-| --- | --- |
-| L0 | 单文件小修、简单解释、简单命令、文案微调 |
-| L1 | 一个子代理做隔离阅读、局部验证或风险检查 |
-| L2 | 最少 2 个文件边界清楚的子代理，用于跨模块任务，通常是代码 + 测试/文档 |
-| L3 | 最少 4 个文件边界清楚的子代理，用于迁移、大重构、大范围排查或批量修复 |
-
-如果 L2/L3 任务无法创建足额子代理，goal 应该暂停。不得由主会话继续代替执行。
-
-### 安装
-
-```powershell
-git clone https://github.com/yinsang0910-star/goal-creator.git
-cd .\goal-creator
-python scripts\install_local.py
-```
-
-第一次使用 full-spec / subagent-first 目标前，先运行一次容量设置：
-
-```powershell
-python scripts\ensure_codex_capacity.py
-```
-
-这个脚本只会在 `[agents]` 缺失或数值不正确时更新 `~/.codex/config.toml`：
-
-```toml
-[agents]
-max_threads = 2147483647
-max_depth = 2147483647
-```
-
-如果已经有 `[agents]` 段，只更新这两个字段。不要删除或重排现有配置。
-
-它会写入 `~/.codex/goal-creator-capacity.ok`。之后生成 goal 不应重复出现容量检查，除非 marker 缺失、配置变化，或者你主动要求重查。只有在你需要严格 doctor 验证时，才运行 `python scripts\ensure_codex_capacity.py --doctor`。
-
-### 使用
-
-创建普通 full-spec 目标：
-
-```text
-用 goal-creator 为“重构回测模块”创建并保存一个 full-spec 目标。
-```
-
-为简单任务创建 compact 目标：
-
-```text
-用 goal-creator 为 README 错别字修复创建一个 compact 目标。
-```
-
-检查已有 goal：
-
-```text
-用 goal-creator 检查这个 goal 是否存在验收降级、缺少验证、中英混用、假子代理派发。
-```
-
-之后执行已保存目标：
-
-```text
-/goal 只执行 `.goals/<file>.md`
-```
-
-### 输出形态
-
-聊天窗口保持很短：
-
-```text
-Saved: .goals/2026-06-20-refactor-backtest-module.md
-
-/goal 只执行 `.goals/2026-06-20-refactor-backtest-module.md`
-```
-
-真正完整的执行要求保存在 `.goals/*.md`。未来 agent 应该读取、恢复、检查并执行这个文件，而不是依赖聊天里的一大段提示词。
-
-### 质量检查
-
-```powershell
-python scripts\smoke_test.py
-python scripts\lint_goal_file.py examples\full-spec-goal.md
-python scripts\check_eval_cases.py
-git diff --check
-```
-
-检查生成出的目标文件：
-
-```powershell
-python scripts\lint_goal_file.py .goals\<file>.md
-```
+保存的 goal 使用稳定 `goal:*` 标记，并明确服从 `AGENTS.md`、项目当前正本、最新代码和 runtime evidence；不规定 agent 数量，不修改全局 Codex 配置。

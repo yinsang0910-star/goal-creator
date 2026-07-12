@@ -1,6 +1,8 @@
 ---
-title: Goal Creator v0.2
-created: 2026-06-20
+schema: goal/v1
+authority: subordinate
+title: Goal Creator Simplification
+created: 2026-07-12
 status: draft
 language: en
 mode: full-spec
@@ -9,148 +11,89 @@ formats:
   - markdown
 ---
 
-# Goal Creator v0.2
+# Goal Creator Simplification
 
+<!-- goal:launcher -->
 ## Short Command
 
 ```text
-/goal Execute only `.goals/2026-06-20-goal-creator-v0-2.md`.
+/goal Execute only `.goals/2026-07-12-goal-creator-simplification.md`.
 ```
 
+<!-- goal:objective -->
 ## Objective
 
-Upgrade `goal-creator` so the chat command stays short while the saved `.goals/*.md` file carries the full execution contract.
+Keep goal creation concise, explicit about persistence, and subordinate to current project truth.
 
+<!-- goal:original_request -->
 ## Original Request
 
-Make `/goal` commands concise while keeping the goal file content substantial and rigorous enough for a future agent to execute without guessing.
+Simplify goal-creator now that Codex handles its own agent orchestration.
 
+<!-- goal:non_negotiables -->
 ## Non-Negotiables
 
-- Keep the launcher short.
-- Keep the saved goal as the complete execution contract.
-- Do not treat the short launcher as a replacement for full success criteria, scope, verification, safety, stop, and pause details.
+- Never execute a created goal automatically.
+- Never modify global Codex configuration.
+- Do not prescribe agent tiers, counts, models, providers, or reasoning levels.
 
+<!-- goal:success_criteria -->
 ## Success Criteria
 
-- `SKILL.md` describes `full-spec` as the default mode.
-- The saved file includes `Short Command`, objective, success criteria, scope, execution plan, verification, safety, iteration policy, stop, and pause.
-- The short Codex `/goal` points to the saved file and requires the future executing agent to read it first.
-- Creating the goal does not execute the goal.
-- The smoke test verifies `mode: full-spec` and the `Short Command` section.
-- The saved goal preserves original intent and does not weaken user-provided acceptance criteria.
+- Ordinary tasks produce compact copyable text without file writes.
+- Persistence occurs only after an explicit request.
+- Saved contracts use stable canonical markers and preserve current-project authority.
+- UTF-8 translated headings do not control machine validation.
 
+<!-- goal:scope -->
 ## Scope
 
 Allowed:
-- Modify `SKILL.md`, README, examples, and scripts.
-- Keep `scripts/save_goal.py` as a small persistence helper.
+- Modify this repository's skill, scripts, example, metadata, and README.
 
 Forbidden:
-- Do not add a database, web UI, template engine, or external dependency.
-- Do not modify unrelated local projects or global agent configuration.
+- Do not modify global configuration, other skills, plugin caches, or external repositories.
 
+<!-- goal:plan -->
 ## Execution Plan
 
-1. Update the skill instructions to define compact and full-spec modes.
-2. Add `mode` to saved goal frontmatter.
-3. Add original-request and non-negotiable fields to prevent silent scope reduction.
-4. Add a full-spec example.
-5. Update the smoke test.
-6. Run checks, sync the local installed skill, commit, push, and tag the release.
+1. Encode compact/full-spec and persistence selection rules.
+2. Validate stable canonical markers instead of translated headings.
+3. Make installation validate, back up, and replace only goal-creator.
+4. Run focused checks and compare repository and installed hashes.
 
+<!-- goal:verification -->
 ## Verification
 
 - Run `python scripts/smoke_test.py`.
-- Run `python scripts/save_goal.py --help`.
-- Run the repository privacy scan and confirm no sensitive local data is present.
-- Confirm `git status --short --branch` is clean after push.
+- Run `python scripts/lint_goal_file.py examples/full-spec-goal.md`.
+- Run the skill validator and `git diff --check`.
 
+<!-- goal:safety -->
 ## Safety / Constraints
 
-- Keep the short command under the input-box limit.
-- Keep full details in the saved Markdown file.
-- Preserve no-dependency operation.
+- Keep repository writes inside `C:\goal-creator`.
+- Back up the installed goal-creator before replacement.
+- Do not push or publish externally.
 
+<!-- goal:iteration -->
 ## Iteration Policy
 
-- Make one focused change set.
-- Rerun the smoke test after script or example edits.
-- If a check fails, inspect the exact output before retrying.
+- Fix concrete failing evidence without weakening the requested outcome or safety boundary.
 
-## Codex Execution Contract
+<!-- goal:authority -->
+## Authority
 
-- CWD: current project root.
-- Instruction source: read and obey applicable `AGENTS.md`.
-- Resumable artifact: this `.goals/2026-06-20-goal-creator-v0-2.md`.
-- Final checks: `git status --short`, `git diff --check`, and `python scripts/smoke_test.py`.
-- Chat output: report only saved path, launcher, verification result, and material risks.
+- Read and obey applicable `AGENTS.md` and current project authority documents.
+- Current code and fresh runtime evidence override stale checkboxes, chat, summaries, and this goal's factual claims.
+- This goal preserves intent and boundaries; it is not a second source of runtime truth.
 
-## Subagent Dispatch Decision
-
-- L0: no subagent. Use for single-file small edits, explanations, simple commands, and wording tweaks.
-- L1: one subagent. Use for isolated reading, local verification, or risk review.
-- L2: minimum 2 subagents. Use for cross-module work, code plus tests, or implementation and verification that can proceed in parallel.
-- L3: minimum 4 subagents. Use for multi-module migrations, broad refactors, investigations, and batch fixes.
-- This task is L2 because docs, lint, and examples can be split by file ownership.
-- If L2/L3 is selected and the session cannot create the required subagents, pause; the main session must not continue as the substitute executor.
-
-## Subagent Execution Liberation
-
-- Main session runs as scheduler, merger, boundary judge, and final verification owner.
-- Delegate execution work that can be isolated, verified, and handed off.
-- Subagents own context reading, implementation, local tests, local fixes, and risk reporting inside their file range.
-- Main session keeps goal freezing, file-boundary decisions, merge decisions, and final verification.
-
-## Multi-Agent Collaboration
-
-- Main session selects L0/L1/L2/L3 before implementation and dispatches only useful slices.
-- Main session must avoid fake parallel work and keep file ownership explicit.
-
-## Dispatch Matrix
-
-| Slice | Agent Role | Goal | Allowed Files | Forbidden Files | Inputs | Required Output | Verify | Depends On | Merge Owner |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| docs/handoff | subagent | Document the subagent-first contract in user-facing docs | SKILL.md, README.md | scripts/save_goal.py, unrelated files | Current full-spec contract and user feedback | Changed files, verification command, result, risk, handoff | `python scripts/smoke_test.py` | none | main session |
-| verification | subagent | Enforce dispatch levels and liberation checks in examples and lint | scripts/smoke_test.py, scripts/lint_goal_file.py, examples/full-spec-goal.md | unrelated files | Required dispatch matrix and result template | Changed files, verification command, result, risk, handoff | `python scripts/smoke_test.py` and `python scripts/lint_goal_file.py examples/full-spec-goal.md` | docs/handoff | main session |
-
-## Shared File Ownership
-
-Main-session-owned:
-- Release tag and final merge decisions.
-- Any file touched by both slices.
-
-Subagent-owned:
-- Files explicitly listed in each dispatch row's `Allowed Files`.
-
-## Subagent Result
-
-Slice:
-Status: adopted | needs-main-merge | blocked | rejected
-Changed Files:
-Verification Run:
-Verification Result:
-Boundary Crossings:
-Risks:
-Handoff:
-
-## Merge Policy
-
-- Dispatch independent slices first.
-- Main session consumes each subagent result before merging.
-- Shared files are merged serially by the main session.
-- Final verification runs after all adopted results are merged.
-
-## Rejection Conditions
-
-- Reject subagent work that crosses file boundaries.
-- Reject work that skips verification or weakens the goal.
-- Reject work that cannot be understood or merged from the handoff.
-
+<!-- goal:stop -->
 ## Stop
 
-- The new default behavior is documented, tested, installed locally, pushed to GitHub, and tagged.
+- Repository and installed-package checks pass, and their expected file hashes match.
 
+<!-- goal:pause -->
 ## Pause
 
-- GitHub publishing permissions, destructive Git operations, or unexpected sensitive data exposure require user confirmation.
+- Pause before external publication, unrelated writes, or any operation requiring new credentials.

@@ -76,6 +76,8 @@ def main() -> int:
 
     content = (
         "---\n"
+        "schema: goal/v1\n"
+        "authority: subordinate\n"
         f"title: {yaml_quote(args.title)}\n"
         f"created: {today}\n"
         f"status: {args.status}\n"
